@@ -1,0 +1,11 @@
+Current username: $currentUsername
+
+
+
+<span class="user-hover" id="issue_summary_assignee_admin" rel="admin">
+    <span class="aui-avatar aui-avatar-small"><span class="aui-avatar-inner"><img
+            src="http://localhost:2990/jira/secure/useravatar?size=small&amp;ownerId=$currentUsername&amp;"
+            alt="admin"></span></span>
+    $currentUsername
+        </span>
+<span class="overlay-icon aui-icon aui-icon-small aui-iconfont-edit"></span>
