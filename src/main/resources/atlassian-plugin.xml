@@ -25,4 +25,14 @@
         <resource name="view" type="velocity" location="templates/planning-poker.vm"/>
         <label key="planning-poker.title"/>
     </web-panel>
+    <ao key="ao-module">
+        <description>The module configuring the Active Objects service used by this plugin</description>
+        <entity>com.aprey.jira.plugin.openpoker.PokerSession</entity>
+        <entity>com.aprey.jira.plugin.openpoker.EstimationInfo</entity>
+    </ao>
+    <servlet name="Poker Planning Servlet" class="com.aprey.jira.plugin.openpoker.PokerSessionServlet"
+             key="poker-session">
+        <description>A servlet to add new Planning Poker session</description>
+        <url-pattern>/poker/session</url-pattern>
+    </servlet>
 </atlassian-plugin>

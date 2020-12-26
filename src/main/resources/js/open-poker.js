@@ -1,0 +1,1 @@
+AJS.$(".estimator-tooltip").tooltip();

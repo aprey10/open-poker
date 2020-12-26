@@ -1,11 +1,90 @@
-Current username: $currentUsername
+<meta name="decorator" content="atl.admin">
+$webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
+$webResourceManager.requireResource("com.atlassian.auiplugin:aui-select")
+$webResourceManager.requireResource("com.atlassian.auiplugin:aui-tooltips")
+$webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:open-poker-resources")
 
+#if($viewDTO)
+<ul class="item-details">
+    <li class="people-details">
+        <dl>
+            <dt>Initiated by:</dt>
+            <dd>
+        <span class="view-issue-field inactive">
 
-
-<span class="user-hover" id="issue_summary_assignee_admin" rel="admin">
     <span class="aui-avatar aui-avatar-small"><span class="aui-avatar-inner"><img
-            src="http://localhost:2990/jira/secure/useravatar?size=small&amp;ownerId=$currentUsername&amp;"
+            src="$contextPath/secure/useravatar?size=small&amp;ownerId=$viewDTO.getModeratorName()"
             alt="admin"></span></span>
-    $currentUsername
+            $viewDTO.getModeratorName()
         </span>
-<span class="overlay-icon aui-icon aui-icon-small aui-iconfont-edit"></span>
+                </span>
+            </dd>
+        </dl>
+    </li>
+    <li class="people-details">
+        <dl>
+            <dt>Estimators:</dt>
+            <dd>
+                #if($viewDTO.getEstimatorNameList().size() == 0)
+                    -----
+                #else
+                    #foreach($name in $viewDTO.getEstimatorNameList())
+                        <span class="aui-avatar aui-avatar-small estimator-tooltip"><span class="aui-avatar-inner" title="$name"><img
+                                src="$contextPath/secure/useravatar?size=small&amp;ownerId=$name"
+                                alt="admin"></span></span>
+                    #end
+                #end
+            </dd>
+        </dl>
+    </li>
+    <li class="people-details">
+        <dl>
+            <dt>Status:</dt>
+            <dd>
+                $viewDTO.getStatus().getName()
+            </dd>
+        </dl>
+    </li>
+</ul>
+
+    #if($userId == $viewDTO.getModeratorId())
+
+    <form action="/jira/plugins/servlet/poker/session" method="post" class="aui left-aligned-form"
+          style="margin-top: 5px">
+        <input name="issueId" value="$issueId" type="hidden"/>
+        <input name="userId" value="$userId" type="hidden"/>
+        <div class="field-group">
+            <label for="estimationInfo">Your Estimate:</label>
+            <aui-select name="estimationId" placeholder="Choose Estimate" style="max-width: 150px"
+                        no-empty-values="false">
+                <aui-option class="imagebacked" value="No estimationInfo">No estimation</aui-option>
+                #foreach($point in $viewDTO.getPoints())
+                    <aui-option class="imagebacked" value="$point.getId()">$point.getValue()</aui-option>
+                #end
+            </aui-select>
+        </div>
+        <p>
+            <input name="action" type="submit" value="Vote" class="aui-button aui-button-primary"
+                   style="margin-top: 5px"/>
+            <input name="action" type="submit" value="Stop Session" class="aui-button" style="margin-top: 5px"/>
+        </p>
+    </form>
+
+    #end
+#else
+<div>
+    <p>
+        There's no estimation session In Progress
+    </p>
+    <p>
+    <form action="/jira/plugins/servlet/poker/session" method="post">
+        <input name="issueId" value="$issueId" type="hidden"/>
+        <input name="userId" value="$userId" type="hidden"/>
+        <input name="action" type="submit" value="Start Estimation Session" class="aui-button"/>
+    </form>
+    </p>
+</div>
+#end
+
+
+
