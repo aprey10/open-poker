@@ -2,7 +2,7 @@ package com.aprey.jira.plugin.openpoker;
 
 import net.java.ao.Entity;
 
-public interface EstimationInfo extends Entity {
+public interface Estimate extends Entity {
 
     PokerSession getPokerSession();
 
@@ -12,7 +12,7 @@ public interface EstimationInfo extends Entity {
 
     void setEstimatorId(long estimatorId);
 
-    int getEstimationId();
+    int getGradeId();
 
-    void setEstimationId(int estimate);
+    void setGradeId(int gradeId);
 }

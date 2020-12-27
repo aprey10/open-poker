@@ -1,6 +1,6 @@
 package com.aprey.jira.plugin.openpoker;
 
-public interface Estimation {
+public interface EstimationGrade {
 
     int getId();
 

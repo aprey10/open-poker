@@ -26,11 +26,11 @@ public class PokerSessionServlet extends HttpServlet {
                 sessionService.startSession(issueId, userId);
                 break;
             case VOTE:
-                final int estimationId = Integer.parseInt(req.getParameter("estimationId"));
-                sessionService.addEstimate(issueId, userId, estimationId);
+                final int gradeId = Integer.parseInt(req.getParameter("estimationGradeId"));
+                sessionService.addEstimate(issueId, userId, gradeId);
                 break;
             case STOP_SESSION:
-                sessionService.stopSession(issueId, userId);
+                sessionService.stopSession(issueId);
                 break;
         }
 
@@ -45,8 +45,7 @@ public class PokerSessionServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final String issueId = req.getParameter("issueId");
-        final long userId = Long.parseLong(req.getParameter("userId"));
-        sessionService.stopSession(issueId, userId);
+        sessionService.stopSession(issueId);
 
         resp.sendRedirect(req.getContextPath() + "/browse/" + issueId);
     }

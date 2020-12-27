@@ -37,32 +37,32 @@ public class PokerSessionService {
         return session;
     }
 
-    public void addEstimate(String issueId, long estimatorId, int estimationId) {
+    public void addEstimate(String issueId, long estimatorId, int gradeId) {
         final PokerSession session = getSession(issueId).orElseThrow(
                 () -> new SessionNotFoundException(format(SESSION_NOT_FOUND_EXP, issueId)));
-        Optional<EstimationInfo> existingEstimationOpt = findEstimation(estimatorId, session);
-        final EstimationInfo info = existingEstimationOpt.orElseGet(() -> ao.create(EstimationInfo.class));
+        Optional<Estimate> existingEstimationOpt = findEstimation(estimatorId, session);
+        final Estimate info = existingEstimationOpt.orElseGet(() -> ao.create(Estimate.class));
 
         info.setEstimatorId(estimatorId);
-        info.setEstimationId(estimationId);
+        info.setGradeId(gradeId);
         info.setPokerSession(session);
 
         info.save();
     }
 
-    private Optional<EstimationInfo> findEstimation(final long estimatorId, final PokerSession session) {
-        EstimationInfo[] estimationInfos = ao.find(EstimationInfo.class,
-                                                   Query.select()
+    private Optional<Estimate> findEstimation(final long estimatorId, final PokerSession session) {
+        Estimate[] estimates = ao.find(Estimate.class,
+                                             Query.select()
                                                         .where("ESTIMATOR_ID = ? AND POKER_SESSION_ID = ?",
                                                                estimatorId, session));
-        if (estimationInfos.length == 0) {
+        if (estimates.length == 0) {
             return Optional.empty();
         }
 
-        return Optional.of(estimationInfos[0]);
+        return Optional.of(estimates[0]);
     }
 
-    public void stopSession(String issueId, long userId) {
+    public void stopSession(String issueId) {
         final Optional<PokerSession> sessionOpt = getSession(issueId);
         if (!sessionOpt.isPresent()) {
             throw new SessionNotFoundException(format(SESSION_NOT_FOUND_EXP, issueId));

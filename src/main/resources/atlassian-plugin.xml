@@ -28,7 +28,7 @@
     <ao key="ao-module">
         <description>The module configuring the Active Objects service used by this plugin</description>
         <entity>com.aprey.jira.plugin.openpoker.PokerSession</entity>
-        <entity>com.aprey.jira.plugin.openpoker.EstimationInfo</entity>
+        <entity>com.aprey.jira.plugin.openpoker.Estimate</entity>
     </ao>
     <servlet name="Poker Planning Servlet" class="com.aprey.jira.plugin.openpoker.PokerSessionServlet"
              key="poker-session">

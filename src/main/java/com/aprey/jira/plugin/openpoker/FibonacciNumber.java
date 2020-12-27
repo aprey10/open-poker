@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-public enum FibonacciNumbers implements Estimation {
+public enum FibonacciNumber implements EstimationGrade {
     ONE(1, "1"),
     TWO(2, "2"),
     THREE(3, "3"),
@@ -23,13 +23,13 @@ public enum FibonacciNumbers implements Estimation {
     private final int id;
     private final String value;
 
-    private static final Map<Integer, FibonacciNumbers> ID_TO_INSTANCE_MAP = Stream.of(FibonacciNumbers.values())
-                                                                                   .collect(toMap(
-                                                                                           FibonacciNumbers::getId,
-                                                                                           Function.identity())
+    private static final Map<Integer, FibonacciNumber> ID_TO_INSTANCE_MAP = Stream.of(FibonacciNumber.values())
+                                                                                  .collect(toMap(
+                                                                                          FibonacciNumber::getId,
+                                                                                          Function.identity())
                                                                                            );
 
-    FibonacciNumbers(int id, String value) {
+    FibonacciNumber(int id, String value) {
         this.id = id;
         this.value = value;
     }
@@ -44,11 +44,11 @@ public enum FibonacciNumbers implements Estimation {
         return value;
     }
 
-    public static Estimation findById(int id) {
+    public static EstimationGrade findById(int id) {
         return ID_TO_INSTANCE_MAP.get(id);
     }
 
-    public static List<Estimation> getValuesList() {
-        return Stream.of(FibonacciNumbers.values()).collect(toList());
+    public static List<EstimationGrade> getValuesList() {
+        return Stream.of(FibonacciNumber.values()).collect(toList());
     }
 }

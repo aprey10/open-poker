@@ -22,5 +22,5 @@ public interface PokerSession extends Entity {
     void setUnitOfMeasure(EstimationUnit estimationUnit);
 
     @OneToMany
-    EstimationInfo[] getEstimates();
+    Estimate[] getEstimates();
 }

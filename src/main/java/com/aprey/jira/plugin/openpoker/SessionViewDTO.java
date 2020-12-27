@@ -1,25 +1,24 @@
 package com.aprey.jira.plugin.openpoker;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class SessionViewDTO {
     private final Long moderatorId;
     private final String moderatorName;
-    private final Map<String, Integer> estimates;
     private final SessionStatus status;
-    private final List<Estimation> points;
+    private final List<EstimateDTO> estimates;
+    private final List<EstimationGrade> estimationGrades;
     private final List<String> estimatorNameList;
 
-    public SessionViewDTO(Long moderatorId, String moderatorName,
-                          Map<String, Integer> estimates, SessionStatus status,
-                          List<Estimation> points, List<String> estimatorNameList) {
+    public SessionViewDTO(Long moderatorId, String moderatorName, SessionStatus status,
+                          List<EstimateDTO> estimates,
+                          List<EstimationGrade> estimationGrades, List<String> estimatorNameList) {
         this.moderatorId = moderatorId;
         this.moderatorName = moderatorName;
-        this.estimates = estimates;
         this.status = status;
-        this.points = points;
+        this.estimates = estimates;
+        this.estimationGrades = estimationGrades;
         this.estimatorNameList = estimatorNameList;
     }
 
@@ -31,16 +30,16 @@ public class SessionViewDTO {
         return moderatorName;
     }
 
-    public Map<String, Integer> getEstimates() {
-        return estimates;
-    }
-
     public SessionStatus getStatus() {
         return status;
     }
 
-    public List<Estimation> getPoints() {
-        return points;
+    public List<EstimateDTO> getEstimates() {
+        return estimates;
+    }
+
+    public List<EstimationGrade> getEstimationGrades() {
+        return estimationGrades;
     }
 
     public List<String> getEstimatorNameList() {
@@ -52,9 +51,11 @@ public class SessionViewDTO {
         if (this == o) { return true; }
         if (o == null || getClass() != o.getClass()) { return false; }
         SessionViewDTO that = (SessionViewDTO) o;
-        return moderatorName.equals(that.moderatorName) &&
+        return Objects.equals(moderatorId, that.moderatorId) &&
+               Objects.equals(moderatorName, that.moderatorName) && status == that.status &&
                Objects.equals(estimates, that.estimates) &&
-               status == that.status;
+               Objects.equals(estimationGrades, that.estimationGrades) &&
+               Objects.equals(estimatorNameList, that.estimatorNameList);
     }
 
     @Override

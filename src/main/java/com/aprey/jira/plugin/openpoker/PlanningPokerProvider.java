@@ -7,15 +7,14 @@ import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
-
-import static java.util.stream.Collectors.toMap;
 
 @Scanned
 public class PlanningPokerProvider extends AbstractJiraContextProvider {
@@ -48,21 +47,26 @@ public class PlanningPokerProvider extends AbstractJiraContextProvider {
     }
 
     private void buildSessionView(PokerSession session, Map<String, Object> contextMap) {
-        Map<String, Integer> estimatesMap = Stream.of(session.getEstimates())
-                                                  .collect(toMap(
-                                                          estimationInfo -> getUsername(
-                                                                  estimationInfo.getEstimatorId()),
-                                                          EstimationInfo::getEstimationId));
+        List<EstimateDTO> estimates = Arrays.stream(session.getEstimates())
+                                            .map(this::buildEstimateDTO)
+                                            .collect(Collectors.toList());
 
         SessionViewDTO viewDTO = new SessionViewDTO(
                 session.getModeratorId(),
                 getUsername(session.getModeratorId()),
-                estimatesMap,
                 session.getSessionStatus(),
-                FibonacciNumbers.getValuesList(),
-                new ArrayList<>(estimatesMap.keySet()));
+                estimates,
+                FibonacciNumber.getValuesList(),
+                estimates.stream().map(EstimateDTO::getEstimatorDisplayName).collect(Collectors.toList()));
 
         contextMap.put("viewDTO", viewDTO);
+    }
+
+    private EstimateDTO buildEstimateDTO(Estimate estimate) {
+        final String estimateGrade = FibonacciNumber.findById(estimate.getGradeId()).getValue();
+        final ApplicationUser estimator = getUser(estimate.getEstimatorId());
+
+        return new EstimateDTO(estimateGrade, estimator.getDisplayName(), estimator.getUsername());
     }
 
     private String getUsername(Long userId) {
@@ -72,5 +76,10 @@ public class PlanningPokerProvider extends AbstractJiraContextProvider {
             return "Unknown";
         }
         return applicationUserOpt.get().getUsername();
+    }
+
+    private ApplicationUser getUser(Long userId) {
+        return userManager.getUserById(userId).orElseThrow(() -> new UserNotFoundException(
+                "User with id " + userId + " is not found"));
     }
 }
