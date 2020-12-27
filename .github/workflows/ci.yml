@@ -1,0 +1,9 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: rodrigo-nogues/github-action-install-atlassian-sdk@v1
