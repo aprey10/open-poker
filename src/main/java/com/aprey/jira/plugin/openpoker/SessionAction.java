@@ -6,7 +6,8 @@ import java.util.stream.Stream;
 public enum SessionAction {
     START_SESSION("Start Estimation Session"),
     VOTE("Vote"),
-    STOP_SESSION("Stop Session");
+    STOP_SESSION("Stop Session"),
+    RE_ESTIMATE("Re-estimate");
 
     private final String actionName;
 

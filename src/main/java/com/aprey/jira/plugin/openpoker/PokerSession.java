@@ -21,6 +21,10 @@ public interface PokerSession extends Entity {
 
     void setUnitOfMeasure(EstimationUnit estimationUnit);
 
+    void setCompletionDate(long timestamp);
+
+    long getCompletionDate();
+
     @OneToMany
     Estimate[] getEstimates();
 }

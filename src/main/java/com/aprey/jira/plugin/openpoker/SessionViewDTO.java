@@ -9,17 +9,15 @@ public class SessionViewDTO {
     private final SessionStatus status;
     private final List<EstimateDTO> estimates;
     private final List<EstimationGrade> estimationGrades;
-    private final List<String> estimatorNameList;
 
     public SessionViewDTO(Long moderatorId, String moderatorName, SessionStatus status,
                           List<EstimateDTO> estimates,
-                          List<EstimationGrade> estimationGrades, List<String> estimatorNameList) {
+                          List<EstimationGrade> estimationGrades) {
         this.moderatorId = moderatorId;
         this.moderatorName = moderatorName;
         this.status = status;
         this.estimates = estimates;
         this.estimationGrades = estimationGrades;
-        this.estimatorNameList = estimatorNameList;
     }
 
     public Long getModeratorId() {
@@ -42,10 +40,6 @@ public class SessionViewDTO {
         return estimationGrades;
     }
 
-    public List<String> getEstimatorNameList() {
-        return estimatorNameList;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) { return true; }
@@ -54,8 +48,7 @@ public class SessionViewDTO {
         return Objects.equals(moderatorId, that.moderatorId) &&
                Objects.equals(moderatorName, that.moderatorName) && status == that.status &&
                Objects.equals(estimates, that.estimates) &&
-               Objects.equals(estimationGrades, that.estimationGrades) &&
-               Objects.equals(estimatorNameList, that.estimatorNameList);
+               Objects.equals(estimationGrades, that.estimationGrades);
     }
 
     @Override

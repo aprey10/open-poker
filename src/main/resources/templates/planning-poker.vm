@@ -26,14 +26,14 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
             <dl>
                 <dt>Estimators:</dt>
                 <dd>
-                    #if($viewDTO.getEstimatorNameList().size() == 0)
+                    #if($viewDTO.getEstimates().size() == 0)
                         -----
                     #else
-                        #foreach($name in $viewDTO.getEstimatorNameList())
-                            <span class="aui-avatar aui-avatar-small estimator-tooltip"><span class="aui-avatar-inner"
-                                                                                              title="$name"><img
-                                    src="$contextPath/secure/useravatar?size=small&amp;ownerId=$name"
-                                    alt="admin"></span></span>
+                        #foreach($estimate in $viewDTO.getEstimates())
+                            <span class="aui-avatar aui-avatar-small estimator-tooltip">
+                                <span class="aui-avatar-inner" title="$estimate.getEstimatorDisplayName()">
+                                    <img src="$contextPath/secure/useravatar?size=small&amp;ownerId=$estimate.getEstimatorUsername()"
+                                         alt="admin"></span></span>
                         #end
                     #end
                 </dd>
@@ -73,7 +73,7 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
         </p>
     </form>
     #elseif($viewDTO.getStatus() == "FINISHED")
-    <table class="aui aui-table-list" style="max-width: 400px">
+    <table class="aui aui-table-list" style="max-width: 355px">
         <thead>
         <tr>
             <th id="estimator">Estimator</th>
@@ -86,8 +86,8 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
                 <td headers="estimator">
                 <span class="aui-avatar aui-avatar-small"><span class="aui-avatar-inner">
                     <img
-                        src="$contextPath/secure/useravatar?size=small&amp;ownerId=$estimate.getEstimatorUsername()"
-                        alt="admin"></span></span>
+                            src="$contextPath/secure/useravatar?size=small&amp;ownerId=$estimate.getEstimatorUsername()"
+                            alt="admin"></span></span>
                     $estimate.getEstimatorDisplayName()
                 </td>
                 <td headers="estimate">
@@ -97,6 +97,13 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
             #end
         </tbody>
     </table>
+    <p>
+    <form action="/jira/plugins/servlet/poker/session" method="post">
+        <input name="issueId" value="$issueId" type="hidden"/>
+        <input name="userId" value="$userId" type="hidden"/>
+        <input name="action" type="submit" value="Re-estimate" class="aui-button aui-button-primary"/>
+    </form>
+    </p>
     #end
 #else
 <div>

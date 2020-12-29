@@ -32,6 +32,9 @@ public class PokerSessionServlet extends HttpServlet {
             case STOP_SESSION:
                 sessionService.stopSession(issueId);
                 break;
+            case RE_ESTIMATE:
+                sessionService.startSession(issueId, userId);
+                break;
         }
 
         resp.sendRedirect(req.getContextPath() + "/browse/" + issueId);

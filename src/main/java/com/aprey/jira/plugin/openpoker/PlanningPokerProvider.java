@@ -37,7 +37,7 @@ public class PlanningPokerProvider extends AbstractJiraContextProvider {
     public Map<String, Object> getContextMap(ApplicationUser applicationUser, JiraHelper jiraHelper) {
         final String issueId = ((Issue) jiraHelper.getContextParams().get(ISSUE_ID_KEY)).getKey();
         final Map<String, Object> contextMap = new HashMap<>();
-        Optional<PokerSession> sessionOpt = sessionService.getSession(issueId);
+        Optional<PokerSession> sessionOpt = findSession(issueId);
         sessionOpt.ifPresent(pokerSession -> buildSessionView(pokerSession, contextMap));
         contextMap.put("contextPath", jiraHelper.getRequest().getContextPath());
         contextMap.put("issueId", issueId);
@@ -56,10 +56,18 @@ public class PlanningPokerProvider extends AbstractJiraContextProvider {
                 getUsername(session.getModeratorId()),
                 session.getSessionStatus(),
                 estimates,
-                FibonacciNumber.getValuesList(),
-                estimates.stream().map(EstimateDTO::getEstimatorDisplayName).collect(Collectors.toList()));
+                FibonacciNumber.getValuesList());
 
         contextMap.put("viewDTO", viewDTO);
+    }
+
+    private Optional<PokerSession> findSession(String issueId) {
+        Optional<PokerSession> sessionOpt = sessionService.getActiveSession(issueId);
+        if (sessionOpt.isPresent()) {
+            return sessionOpt;
+        }
+
+        return sessionService.getLatestCompletedSession(issueId);
     }
 
     private EstimateDTO buildEstimateDTO(Estimate estimate) {
