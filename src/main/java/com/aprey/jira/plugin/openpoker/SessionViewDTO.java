@@ -9,15 +9,18 @@ public class SessionViewDTO {
     private final SessionStatus status;
     private final List<EstimateDTO> estimates;
     private final List<EstimationGrade> estimationGrades;
+    private final boolean alreadyVoted;
 
     public SessionViewDTO(Long moderatorId, String moderatorName, SessionStatus status,
                           List<EstimateDTO> estimates,
-                          List<EstimationGrade> estimationGrades) {
+                          List<EstimationGrade> estimationGrades,
+                          boolean alreadyVoted) {
         this.moderatorId = moderatorId;
         this.moderatorName = moderatorName;
         this.status = status;
         this.estimates = estimates;
         this.estimationGrades = estimationGrades;
+        this.alreadyVoted = alreadyVoted;
     }
 
     public Long getModeratorId() {
@@ -38,6 +41,10 @@ public class SessionViewDTO {
 
     public List<EstimationGrade> getEstimationGrades() {
         return estimationGrades;
+    }
+
+    public boolean isAlreadyVoted() {
+        return alreadyVoted;
     }
 
     @Override

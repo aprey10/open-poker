@@ -13,14 +13,10 @@ import javax.inject.Named;
 import javax.transaction.Transactional;
 import net.java.ao.Query;
 
-import static java.lang.String.format;
-
 @Transactional
 @Scanned
 @Named
 public class PokerSessionService {
-
-    private static final String SESSION_NOT_FOUND_EXP = "Issue with id %s doesn't have related estimation session";
 
     @ComponentImport
     private final ActiveObjects ao;
@@ -30,7 +26,10 @@ public class PokerSessionService {
         this.ao = ao;
     }
 
-    public PokerSession startSession(String issueId, long userId) {
+    public void startSession(String issueId, long userId) {
+        if (getActiveSession(issueId).isPresent()) {
+            return;
+        }
         final PokerSession session = ao.create(PokerSession.class);
         session.setIssueId(issueId);
         session.setModeratorId(userId);
@@ -38,20 +37,33 @@ public class PokerSessionService {
         session.setUnitOfMeasure(EstimationUnit.FIBONACCI);
 
         session.save();
-        return session;
     }
 
     public void addEstimate(String issueId, long estimatorId, int gradeId) {
-        final PokerSession session = getActiveSession(issueId).orElseThrow(
-                () -> new SessionNotFoundException(format(SESSION_NOT_FOUND_EXP, issueId)));
-        Optional<Estimate> existingEstimationOpt = findEstimation(estimatorId, session);
+        final Optional<PokerSession> sessionOpt = getActiveSession(issueId);
+        if (!sessionOpt.isPresent()) {
+            return;
+        }
+        Optional<Estimate> existingEstimationOpt = findEstimation(estimatorId, sessionOpt.get());
         final Estimate info = existingEstimationOpt.orElseGet(() -> ao.create(Estimate.class));
 
         info.setEstimatorId(estimatorId);
         info.setGradeId(gradeId);
-        info.setPokerSession(session);
+        info.setPokerSession(sessionOpt.get());
 
         info.save();
+    }
+
+    public void stopSession(String issueId) {
+        final Optional<PokerSession> sessionOpt = getActiveSession(issueId);
+        if (!sessionOpt.isPresent()) {
+            return;
+        }
+        PokerSession session = sessionOpt.get();
+        session.setSessionStatus(SessionStatus.FINISHED);
+        session.setCompletionDate(System.currentTimeMillis());
+
+        session.save();
     }
 
     private Optional<Estimate> findEstimation(final long estimatorId, final PokerSession session) {
@@ -64,18 +76,6 @@ public class PokerSessionService {
         }
 
         return Optional.of(estimates[0]);
-    }
-
-    public void stopSession(String issueId) {
-        final Optional<PokerSession> sessionOpt = getActiveSession(issueId);
-        if (!sessionOpt.isPresent()) {
-            throw new SessionNotFoundException(format(SESSION_NOT_FOUND_EXP, issueId));
-        }
-        PokerSession session = sessionOpt.get();
-        session.setSessionStatus(SessionStatus.FINISHED);
-        session.setCompletionDate(System.currentTimeMillis());
-
-        session.save();
     }
 
     public Optional<PokerSession> getActiveSession(String issueId) {

@@ -33,6 +33,6 @@
     <servlet name="Poker Planning Servlet" class="com.aprey.jira.plugin.openpoker.PokerSessionServlet"
              key="poker-session">
         <description>A servlet to add new Planning Poker session</description>
-        <url-pattern>/poker/session</url-pattern>
+        <url-pattern>/open-poker/session</url-pattern>
     </servlet>
 </atlassian-plugin>

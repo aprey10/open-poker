@@ -38,7 +38,7 @@ public class PlanningPokerProvider extends AbstractJiraContextProvider {
         final String issueId = ((Issue) jiraHelper.getContextParams().get(ISSUE_ID_KEY)).getKey();
         final Map<String, Object> contextMap = new HashMap<>();
         Optional<PokerSession> sessionOpt = findSession(issueId);
-        sessionOpt.ifPresent(pokerSession -> buildSessionView(pokerSession, contextMap));
+        sessionOpt.ifPresent(pokerSession -> buildSessionView(pokerSession, contextMap, applicationUser.getId()));
         contextMap.put("contextPath", jiraHelper.getRequest().getContextPath());
         contextMap.put("issueId", issueId);
         contextMap.put("userId", applicationUser.getId());
@@ -46,17 +46,20 @@ public class PlanningPokerProvider extends AbstractJiraContextProvider {
         return contextMap;
     }
 
-    private void buildSessionView(PokerSession session, Map<String, Object> contextMap) {
+    private void buildSessionView(PokerSession session, Map<String, Object> contextMap, Long currentUserId) {
         List<EstimateDTO> estimates = Arrays.stream(session.getEstimates())
                                             .map(this::buildEstimateDTO)
                                             .collect(Collectors.toList());
+        boolean alreadyVoted = Arrays.stream(session.getEstimates()).anyMatch(e -> e.getEstimatorId() == currentUserId);
 
         SessionViewDTO viewDTO = new SessionViewDTO(
                 session.getModeratorId(),
                 getUsername(session.getModeratorId()),
                 session.getSessionStatus(),
                 estimates,
-                FibonacciNumber.getValuesList());
+                FibonacciNumber.getValuesList(),
+                alreadyVoted
+        );
 
         contextMap.put("viewDTO", viewDTO);
     }
