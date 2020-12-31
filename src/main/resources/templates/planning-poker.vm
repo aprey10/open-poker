@@ -35,6 +35,7 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
                         #foreach($estimate in $viewDTO.getEstimates())
                             <span class="aui-avatar aui-avatar-small">
                                 <span class="aui-avatar-inner op-estimator-tooltip"
+                                      data-title="$estimate.getEstimatorDisplayName()"
                                       title="$estimate.getEstimatorDisplayName()">
                                     <img src="$contextPath/secure/useravatar?size=small&amp;ownerId=$estimate.getEstimatorUsername()"
                                          alt="$estimate.getEstimatorDisplayName()">
@@ -129,6 +130,3 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
     </p>
 </div>
 #end
-
-
-

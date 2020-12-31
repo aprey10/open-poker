@@ -1,10 +1,9 @@
-AJS.$(".op-estimator-tooltip").tooltip();
-
 //TODO: consider replacing it with some lightweight single page JS framework.
 (function ($) {
     var url = AJS.contextPath() + "/rest/open-poker/1.0/session";
 
     $(document).ready(function () {
+        $(".op-estimator-tooltip").tooltip();
         var sessionStatus = $("#open-poker-js-session-status").val();
         if (sessionStatus === "IN_PROGRESS") {
             ping($("#open-poker-js-issueId").val(), url);
@@ -51,7 +50,7 @@ function doesNotContain(list, item) {
 function getEstimatorsFromView() {
     var estimators = []
     $.each($(".op-estimator-tooltip"), function (i, e) {
-        estimators.push(e.getAttribute('title'));
+        estimators.push(e.getAttribute('data-title'));
     })
 
     return estimators;
@@ -60,7 +59,11 @@ function getEstimatorsFromView() {
 function addEstimator(username, displayName) {
     var url = AJS.contextPath() + "/secure/useravatar?size=small&ownerId=" + username;
     var img = $('<img />', {'src': url, 'alt': displayName});
-    var span = $('<span />', {'class': 'aui-avatar-inner op-estimator-tooltip', title: displayName})
+    var span = $('<span />', {
+        'class': 'aui-avatar-inner op-estimator-tooltip',
+        'title': displayName,
+        'data-title': displayName
+    })
         .append(img);
     var outerSpan = $('<span />', {'class': 'aui-avatar aui-avatar-small estimator-avatar'}).append(span);
 

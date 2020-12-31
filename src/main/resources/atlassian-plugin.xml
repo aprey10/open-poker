@@ -13,10 +13,15 @@
     <!-- add our web resources -->
     <web-resource key="open-poker-resources" name="open-poker Web Resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <dependency>com.atlassian.auiplugin:aui-select</dependency>
+        <dependency>com.atlassian.auiplugin:aui-tooltips</dependency>
         <resource type="download" name="open-poker.css" location="/css/open-poker.css"/>
         <resource type="download" name="open-poker.js" location="/js/open-poker.js"/>
         <resource type="download" name="images/" location="/images"/>
         <context>open-poker</context>
+        <context>jira.view.issue</context>
+        <context>jira.navigator.advanced</context>
+        <context>jira.navigator.simple</context>
     </web-resource>
     <web-panel name="PlanningPoker" i18n-name-key="planning-poker.name" key="planning-poker"
                location="atl.jira.view.issue.right.context" weight="1000">
