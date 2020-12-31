@@ -35,4 +35,7 @@
         <description>A servlet to add new Planning Poker session</description>
         <url-pattern>/open-poker/session</url-pattern>
     </servlet>
+    <rest key="rest" path="/open-poker" version="1.0">
+        <description>Rest resource for</description>
+    </rest>
 </atlassian-plugin>

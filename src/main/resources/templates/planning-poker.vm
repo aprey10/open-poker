@@ -4,8 +4,8 @@ $webResourceManager.requireResource("com.atlassian.auiplugin:aui-select")
 $webResourceManager.requireResource("com.atlassian.auiplugin:aui-tooltips")
 $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:open-poker-resources")
 
-<input type="hidden" id="op-js-issueId" value="$issueId"/>
-<input type="hidden" id="op-js-session-status" value="$viewDTO.getStatus()"/>
+<input type="hidden" id="open-poker-js-issueId" value="$issueId"/>
+<input type="hidden" id="open-poker-js-session-status" value="$viewDTO.getStatus()"/>
 
 #if($viewDTO)
     #if($viewDTO.getStatus() == "IN_PROGRESS")
@@ -28,15 +28,18 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
         <li class="people-details">
             <dl>
                 <dt>Estimated By:</dt>
-                <dd>
+                <dd id="open-poker-js-estimators">
                     #if($viewDTO.getEstimates().size() == 0)
-                        -----
+                        none
                     #else
                         #foreach($estimate in $viewDTO.getEstimates())
                             <span class="aui-avatar aui-avatar-small">
-                                <span class="aui-avatar-inner estimator-tooltip" title="$estimate.getEstimatorDisplayName()">
+                                <span class="aui-avatar-inner op-estimator-tooltip"
+                                      title="$estimate.getEstimatorDisplayName()">
                                     <img src="$contextPath/secure/useravatar?size=small&amp;ownerId=$estimate.getEstimatorUsername()"
-                                         alt="admin"></span></span>
+                                         alt="$estimate.getEstimatorDisplayName()">
+                                </span>
+                            </span>
                         #end
                     #end
                 </dd>
