@@ -1,4 +1,4 @@
-package com.aprey.jira.plugin.openpoker;
+package com.aprey.jira.plugin.openpoker.api;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

@@ -8,7 +8,7 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
 <input type="hidden" id="open-poker-js-session-status" value="$viewDTO.getStatus()"/>
 
 #if($viewDTO)
-    #if($viewDTO.getStatus() == "IN_PROGRESS")
+    #if($viewDTO.getSession().getStatus() == "IN_PROGRESS")
     <ul class="item-details">
         <li class="people-details">
             <dl>
@@ -17,9 +17,9 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
         <span class="view-issue-field inactive">
 
     <span class="aui-avatar aui-avatar-small"><span class="aui-avatar-inner"><img
-            src="$contextPath/secure/useravatar?size=small&amp;ownerId=$viewDTO.getModeratorName()"
+            src="$contextPath/secure/useravatar?size=small&amp;ownerId=$viewDTO.getSession().getModerator().getUsername()"
             alt="admin"></span></span>
-            $viewDTO.getModeratorName()
+            $viewDTO.getSession().getModerator().getFullName()
         </span>
                     </span>
                 </dd>
@@ -29,16 +29,16 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
             <dl>
                 <dt>Estimated By:</dt>
                 <dd id="open-poker-js-estimators">
-                    #if($viewDTO.getEstimates().size() == 0)
+                    #if($viewDTO.getSession().getEstimates().size() == 0)
                         none
                     #else
-                        #foreach($estimate in $viewDTO.getEstimates())
+                        #foreach($estimate in $viewDTO.getSession().getEstimates())
                             <span class="aui-avatar aui-avatar-small">
                                 <span class="aui-avatar-inner op-estimator-tooltip"
-                                      data-title="$estimate.getEstimatorDisplayName()"
-                                      title="$estimate.getEstimatorDisplayName()">
-                                    <img src="$contextPath/secure/useravatar?size=small&amp;ownerId=$estimate.getEstimatorUsername()"
-                                         alt="$estimate.getEstimatorDisplayName()">
+                                      data-title="$estimate.getEstimator().getFullName()"
+                                      title="$estimate.getEstimator().getFullName()">
+                                    <img src="$contextPath/secure/useravatar?size=small&amp;ownerId=$estimate.getEstimator().getUsername()"
+                                         alt="$estimate.getEstimator().getFullName()">
                                 </span>
                             </span>
                         #end
@@ -50,7 +50,7 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
             <dl>
                 <dt>Status:</dt>
                 <dd>
-                    $viewDTO.getStatus().getName()
+                    $viewDTO.getSession().getStatus().getName()
                 </dd>
             </dl>
         </li>
@@ -78,12 +78,12 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
                 <input name="action" type="submit" value="Vote" class="aui-button aui-button-primary"
                        style="margin-top: 5px"/>
             #end
-            #if($userId == $viewDTO.getModeratorId())
+            #if($userId == $viewDTO.getSession().getModerator().getId())
                 <input name="action" type="submit" value="Stop Session" class="aui-button" style="margin-top: 5px"/>
             #end
         </p>
     </form>
-    #elseif($viewDTO.getStatus() == "FINISHED")
+    #elseif($viewDTO.getSession().getStatus() == "FINISHED")
     <table class="aui aui-table-list" style="max-width: 355px">
         <thead>
         <tr>
@@ -92,17 +92,17 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
         </tr>
         </thead>
         <tbody>
-            #foreach($estimate in $viewDTO.getEstimates())
+            #foreach($estimate in $viewDTO.getSession().getEstimates())
             <tr>
                 <td headers="estimator">
                 <span class="aui-avatar aui-avatar-small"><span class="aui-avatar-inner">
                     <img
-                            src="$contextPath/secure/useravatar?size=small&amp;ownerId=$estimate.getEstimatorUsername()"
+                            src="$contextPath/secure/useravatar?size=small&amp;ownerId=$estimate.getEstimator().getUsername()"
                             alt="admin"></span></span>
-                    $estimate.getEstimatorDisplayName()
+                    $estimate.getEstimator().getFullName()
                 </td>
                 <td headers="estimate">
-                    $estimate.getEstimate()
+                    $estimate.getGrade()
                 </td>
             </tr>
             #end

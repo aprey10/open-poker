@@ -1,18 +1,11 @@
 package com.aprey.jira.plugin.openpoker;
 
-import net.java.ao.Entity;
+import lombok.Builder;
+import lombok.Value;
 
-public interface Estimate extends Entity {
-
-    PokerSession getPokerSession();
-
-    void setPokerSession(PokerSession pokerSession);
-
-    long getEstimatorId();
-
-    void setEstimatorId(long estimatorId);
-
-    int getGradeId();
-
-    void setGradeId(int gradeId);
+@Value
+@Builder
+public class Estimate {
+    private final User estimator;
+    private final String grade;
 }

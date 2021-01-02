@@ -26,16 +26,16 @@
     <web-panel name="PlanningPoker" i18n-name-key="planning-poker.name" key="planning-poker"
                location="atl.jira.view.issue.right.context" weight="1000">
         <description key="planning-poker.description">The PlanningPoker Plugin</description>
-        <context-provider class="com.aprey.jira.plugin.openpoker.PlanningPokerProvider"/>
+        <context-provider class="com.aprey.jira.plugin.openpoker.api.PlanningPokerWebPanelProvider"/>
         <resource name="view" type="velocity" location="templates/planning-poker.vm"/>
         <label key="planning-poker.title"/>
     </web-panel>
     <ao key="ao-module">
         <description>The module configuring the Active Objects service used by this plugin</description>
-        <entity>com.aprey.jira.plugin.openpoker.PokerSession</entity>
-        <entity>com.aprey.jira.plugin.openpoker.Estimate</entity>
+        <entity>com.aprey.jira.plugin.openpoker.persistence.PokerSessionEntity</entity>
+        <entity>com.aprey.jira.plugin.openpoker.persistence.EstimateEntity</entity>
     </ao>
-    <servlet name="Poker Planning Servlet" class="com.aprey.jira.plugin.openpoker.PokerSessionServlet"
+    <servlet name="Poker Planning Servlet" class="com.aprey.jira.plugin.openpoker.api.PokerSessionServlet"
              key="poker-session">
         <description>A servlet to add new Planning Poker session</description>
         <url-pattern>/open-poker/session</url-pattern>

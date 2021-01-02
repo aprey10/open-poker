@@ -1,10 +1,13 @@
-package com.aprey.jira.plugin.openpoker;
+package com.aprey.jira.plugin.openpoker.api;
 
+import com.aprey.jira.plugin.openpoker.Estimate;
+import com.aprey.jira.plugin.openpoker.PokerSession;
+import com.aprey.jira.plugin.openpoker.UserNotFoundException;
+import com.aprey.jira.plugin.openpoker.persistence.PersistenceService;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -20,12 +23,12 @@ import javax.ws.rs.core.Response;
 @Scanned
 public class PokerSessionResource {
 
-    private final PokerSessionService sessionService;
+    private final PersistenceService sessionService;
     @ComponentImport
     private final UserManager userManager;
 
     @Inject
-    public PokerSessionResource(PokerSessionService sessionService, UserManager userManager) {
+    public PokerSessionResource(PersistenceService sessionService, UserManager userManager) {
         this.sessionService = sessionService;
         this.userManager = userManager;
     }
@@ -40,18 +43,18 @@ public class PokerSessionResource {
         }
         PokerSession activeSession = activeSessionOpt.get();
 
-        SessionPingStatusDTO sessionPingStatusDTO = new SessionPingStatusDTO();
-        sessionPingStatusDTO.setStatus(activeSession.getSessionStatus());
-        sessionPingStatusDTO.setEstimators(Arrays.stream(activeSession.getEstimates())
-                                                 .map(this::buildDTO)
-                                                 .collect(Collectors.toList()));
+        SessionDTO sessionDTO = new SessionDTO();
+        sessionDTO.setStatus(activeSession.getStatus());
+        sessionDTO.setEstimators(activeSession.getEstimates().stream()
+                                              .map(this::buildDTO)
+                                              .collect(Collectors.toList()));
 
-        return Response.ok(sessionPingStatusDTO).build();
+        return Response.ok(sessionDTO).build();
     }
 
     private EstimatorDTO buildDTO(Estimate estimate) {
         EstimatorDTO dto = new EstimatorDTO();
-        ApplicationUser user = getUser(estimate.getEstimatorId());
+        ApplicationUser user = getUser(estimate.getEstimator().getId());
         dto.setUsername(user.getUsername());
         dto.setDisplayName(user.getDisplayName());
 

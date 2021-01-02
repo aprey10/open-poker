@@ -1,5 +1,7 @@
-package com.aprey.jira.plugin.openpoker;
+package com.aprey.jira.plugin.openpoker.api;
 
+import com.aprey.jira.plugin.openpoker.SessionStatus;
+import com.aprey.jira.plugin.openpoker.api.EstimatorDTO;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class SessionPingStatusDTO {
+public class SessionDTO {
 
     @XmlElement
     private SessionStatus status;

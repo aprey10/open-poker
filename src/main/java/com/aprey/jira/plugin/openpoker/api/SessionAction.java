@@ -1,4 +1,4 @@
-package com.aprey.jira.plugin.openpoker;
+package com.aprey.jira.plugin.openpoker.api;
 
 import java.util.Optional;
 import java.util.stream.Stream;
