@@ -5,7 +5,7 @@ $webResourceManager.requireResource("com.atlassian.auiplugin:aui-tooltips")
 $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:open-poker-resources")
 
 <input type="hidden" id="open-poker-js-issueId" value="$issueId"/>
-<input type="hidden" id="open-poker-js-session-status" value="$viewDTO.getStatus()"/>
+<input type="hidden" id="open-poker-js-session-status" value="$viewDTO.getSession().getStatus()"/>
 
 #if($viewDTO)
     #if($viewDTO.getSession().getStatus() == "IN_PROGRESS")
@@ -79,42 +79,46 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
                        style="margin-top: 5px"/>
             #end
             #if($userId == $viewDTO.getSession().getModerator().getId())
-                <input name="action" type="submit" value="Stop Session" class="aui-button" style="margin-top: 5px"/>
+                <input name="action" type="submit" value="Stop Estimation" class="aui-button" style="margin-top: 5px"/>
             #end
         </p>
     </form>
     #elseif($viewDTO.getSession().getStatus() == "FINISHED")
-    <table class="aui aui-table-list" style="max-width: 355px">
-        <thead>
-        <tr>
-            <th id="estimator">Estimator</th>
-            <th id="estimate">Estimate</th>
-        </tr>
-        </thead>
-        <tbody>
-            #foreach($estimate in $viewDTO.getSession().getEstimates())
+        #if($viewDTO.getSession().getEstimates().size() == 0)
+            There are no estimates in this session
+        #else
+        <table class="aui aui-table-list" style="max-width: 355px">
+            <thead>
             <tr>
-                <td headers="estimator">
+                <th id="estimator">Estimator</th>
+                <th id="estimate">Estimate</th>
+            </tr>
+            </thead>
+            <tbody>
+                #foreach($estimate in $viewDTO.getSession().getEstimates())
+                <tr>
+                    <td headers="estimator">
                 <span class="aui-avatar aui-avatar-small"><span class="aui-avatar-inner">
                     <img
                             src="$contextPath/secure/useravatar?size=small&amp;ownerId=$estimate.getEstimator().getUsername()"
                             alt="admin"></span></span>
-                    $estimate.getEstimator().getFullName()
-                </td>
-                <td headers="estimate">
-                    $estimate.getGrade()
-                </td>
-            </tr>
-            #end
-        </tbody>
-    </table>
-    <p>
-    <form action="/jira/plugins/servlet/open-poker/session" method="post">
-        <input name="issueId" value="$issueId" type="hidden"/>
-        <input name="userId" value="$userId" type="hidden"/>
-        <input name="action" type="submit" value="Re-estimate" class="aui-button aui-button-primary"/>
-    </form>
-    </p>
+                        $estimate.getEstimator().getFullName()
+                    </td>
+                    <td headers="estimate">
+                        $estimate.getGrade()
+                    </td>
+                </tr>
+                #end
+            </tbody>
+        </table>
+        #end
+        <p>
+            <form action="/jira/plugins/servlet/open-poker/session" method="post">
+                <input name="issueId" value="$issueId" type="hidden"/>
+                <input name="userId" value="$userId" type="hidden"/>
+                <input name="action" type="submit" value="Re-estimate" class="aui-button aui-button-primary"/>
+            </form>
+        </p>
     #end
 #else
 <div>
@@ -125,7 +129,7 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
     <form action="/jira/plugins/servlet/open-poker/session" method="post">
         <input name="issueId" value="$issueId" type="hidden"/>
         <input name="userId" value="$userId" type="hidden"/>
-        <input name="action" type="submit" value="Start Estimation Session" class="aui-button"/>
+        <input name="action" type="submit" value="Start Estimation" class="aui-button"/>
     </form>
     </p>
 </div>

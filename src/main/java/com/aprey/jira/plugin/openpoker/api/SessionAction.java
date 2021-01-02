@@ -4,9 +4,9 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public enum SessionAction {
-    START_SESSION("Start Estimation Session"),
+    START_SESSION("Start Estimation"),
     VOTE("Vote"),
-    STOP_SESSION("Stop Session"),
+    STOP_SESSION("Stop Estimation"),
     RE_ESTIMATE("Re-estimate");
 
     private final String actionName;

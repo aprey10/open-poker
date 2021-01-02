@@ -50,13 +50,13 @@ public class PersistenceService {
             return;
         }
         Optional<EstimateEntity> existingEstimationOpt = findEstimate(estimatorId, sessionOpt.get());
-        final EstimateEntity info = existingEstimationOpt.orElseGet(() -> ao.create(EstimateEntity.class));
+        final EstimateEntity estimate = existingEstimationOpt.orElseGet(() -> ao.create(EstimateEntity.class));
 
-        info.setEstimatorId(estimatorId);
-        info.setGradeId(gradeId);
-        info.setPokerSession(sessionOpt.get());
+        estimate.setEstimatorId(estimatorId);
+        estimate.setGradeId(gradeId);
+        estimate.setPokerSession(sessionOpt.get());
 
-        info.save();
+        estimate.save();
     }
 
     public void stopSession(String issueId) {
