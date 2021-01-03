@@ -32,8 +32,26 @@ public class StopSessionProcessorTest {
     }
 
     @Test
-    public void sessionIsStoppedAndNewEstimateIsNotAdded() {
+    public void sessionIsStoppedAndNewEstimateIsNotAddedWhenParamIsNull() {
         when(request.getParameter("estimationGradeId")).thenReturn(null);
+        processor.process(persistenceService, request, ISSUE_ID);
+
+        verify(persistenceService, times(1)).stopSession(ISSUE_ID);
+        verify(persistenceService, times(0)).addEstimate(eq(ISSUE_ID), anyLong(), anyInt());
+    }
+
+    @Test
+    public void sessionIsStoppedAndNewEstimateIsNotAddedWhenParamIsEmpty() {
+        when(request.getParameter("estimationGradeId")).thenReturn("");
+        processor.process(persistenceService, request, ISSUE_ID);
+
+        verify(persistenceService, times(1)).stopSession(ISSUE_ID);
+        verify(persistenceService, times(0)).addEstimate(eq(ISSUE_ID), anyLong(), anyInt());
+    }
+
+    @Test
+    public void sessionIsStoppedAndNewEstimateIsNotAddedWhenParamIsNotInt() {
+        when(request.getParameter("estimationGradeId")).thenReturn("test");
         processor.process(persistenceService, request, ISSUE_ID);
 
         verify(persistenceService, times(1)).stopSession(ISSUE_ID);

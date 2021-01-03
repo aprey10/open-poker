@@ -1,18 +1,31 @@
 //TODO: consider replacing it with some lightweight single page JS framework.
 (function ($) {
-    var url = AJS.contextPath() + "/rest/open-poker/1.0/session";
-
     $(document).ready(function () {
-        $(".op-estimator-tooltip").tooltip();
-        var sessionStatus = $("#open-poker-js-session-status").val();
-        if (sessionStatus === "IN_PROGRESS") {
-            ping($("#open-poker-js-issueId").val(), url);
-        }
+        opSyncInit();
+        JIRA.bind(JIRA.Events.NEW_CONTENT_ADDED, function (e, context, reason) {
+            if (reason === 'issueTableRowRefreshed' || reason === 'pageLoad') {
+                setTimeout(opAUIInit, 500);
+            }
+        });
     });
 
 })(AJS.$ || jQuery);
 
-function ping(issueId, url) {
+function opSyncInit() {
+    var url = AJS.contextPath() + "/rest/open-poker/1.0/session";
+    var sessionStatus = $("#open-poker-js-session-status").val();
+    if (sessionStatus === "IN_PROGRESS") {
+        sync(url);
+    }
+}
+
+function opAUIInit() {
+    $(".op-estimator-tooltip").tooltip();
+    $(".op-aui-select").auiSelect2();
+}
+
+function sync(url) {
+    var issueId = $("#open-poker-js-issueId").val()
     $.ajax({
         url: url,
         contentType: 'application/json; charset=utf-8',
@@ -22,7 +35,7 @@ function ping(issueId, url) {
         if (data.status === "IN_PROGRESS") {
             syncEstimators(data.estimators);
             setTimeout(function () {
-                ping(issueId, url);
+                sync(url);
             }, 7000);
         }
     });

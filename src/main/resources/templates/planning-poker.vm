@@ -1,10 +1,10 @@
-<meta name="decorator" content="atl.admin">
 $webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
-$webResourceManager.requireResource("com.atlassian.auiplugin:aui-select")
+$webResourceManager.requireResource("com.atlassian.auiplugin:aui-select2")
 $webResourceManager.requireResource("com.atlassian.auiplugin:aui-tooltips")
 $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:open-poker-resources")
 
 <input type="hidden" id="open-poker-js-issueId" value="$issueId"/>
+<input type="hidden" id="open-poker-js-contextPath" value="$contextPath"/>
 <input type="hidden" id="open-poker-js-session-status" value="$viewDTO.getSession().getStatus()"/>
 
 #if($viewDTO)
@@ -57,20 +57,20 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
     </ul>
 
 
-    <form action="/jira/plugins/servlet/open-poker/session" method="post" class="aui left-aligned-form"
+    <form action="$contextPath/plugins/servlet/open-poker/session" method="post" class="aui left-aligned-form"
           style="margin-top: 5px">
         <input name="issueId" value="$issueId" type="hidden"/>
         <input name="userId" value="$userId" type="hidden"/>
         #if(!$viewDTO.isAlreadyVoted())
             <div class="field-group">
                 <label for="estimationInfo">Your Estimate:</label>
-                <aui-select name="estimationGradeId" placeholder="Choose Estimate" style="max-width: 150px"
-                            no-empty-values="false">
-                    <aui-option class="imagebacked" value="No estimationInfo">No estimation</aui-option>
+                <select name="estimationGradeId" placeholder="Choose Estimate" style="max-width: 150px"
+                        no-empty-values="false" class="op-aui-select">
+                    <option class="imagebacked" value="">No estimation</option>
                     #foreach($grade in $viewDTO.getEstimationGrades())
-                        <aui-option class="imagebacked" value="$grade.getId()">$grade.getValue()</aui-option>
+                        <option class="imagebacked" value="$grade.getId()">$grade.getValue()</option>
                     #end
-                </aui-select>
+                </select>
             </div>
         #end
         <p>
@@ -83,42 +83,52 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
             #end
         </p>
     </form>
-    #elseif($viewDTO.getSession().getStatus() == "FINISHED")
-        #if($viewDTO.getSession().getEstimates().size() == 0)
-            There are no estimates in this session
-        #else
-        <table class="aui aui-table-list" style="max-width: 355px">
-            <thead>
+    #elseif($viewDTO.getSession().getStatus() == "FINISHED" && $viewDTO.getSession().getEstimates().size() > 0)
+    <table class="aui aui-table-list" style="max-width: 355px">
+        <thead>
+        <tr>
+            <th id="estimator">Estimator</th>
+            <th id="estimate">Estimate</th>
+        </tr>
+        </thead>
+        <tbody>
+            #foreach($estimate in $viewDTO.getSession().getEstimates())
             <tr>
-                <th id="estimator">Estimator</th>
-                <th id="estimate">Estimate</th>
-            </tr>
-            </thead>
-            <tbody>
-                #foreach($estimate in $viewDTO.getSession().getEstimates())
-                <tr>
-                    <td headers="estimator">
+                <td headers="estimator">
                 <span class="aui-avatar aui-avatar-small"><span class="aui-avatar-inner">
                     <img
                             src="$contextPath/secure/useravatar?size=small&amp;ownerId=$estimate.getEstimator().getUsername()"
                             alt="admin"></span></span>
-                        $estimate.getEstimator().getFullName()
-                    </td>
-                    <td headers="estimate">
-                        $estimate.getGrade()
-                    </td>
-                </tr>
-                #end
-            </tbody>
-        </table>
-        #end
+                    $estimate.getEstimator().getFullName()
+                </td>
+                <td headers="estimate">
+                    $estimate.getGrade()
+                </td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+    <p>
+    <form action="$contextPath/plugins/servlet/open-poker/session" method="post">
+        <input name="issueId" value="$issueId" type="hidden"/>
+        <input name="userId" value="$userId" type="hidden"/>
+        <input name="action" type="submit" value="Re-estimate" class="aui-button aui-button-primary"/>
+    </form>
+    </p>
+    #else
+## TODO: remove code duplication
+    <div>
         <p>
-            <form action="/jira/plugins/servlet/open-poker/session" method="post">
-                <input name="issueId" value="$issueId" type="hidden"/>
-                <input name="userId" value="$userId" type="hidden"/>
-                <input name="action" type="submit" value="Re-estimate" class="aui-button aui-button-primary"/>
-            </form>
+            There's no estimation session In Progress
         </p>
+        <p>
+        <form action="$contextPath/plugins/servlet/open-poker/session" method="post">
+            <input name="issueId" value="$issueId" type="hidden"/>
+            <input name="userId" value="$userId" type="hidden"/>
+            <input name="action" type="submit" value="Start Estimation" class="aui-button"/>
+        </form>
+        </p>
+    </div>
     #end
 #else
 <div>
@@ -126,7 +136,7 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
         There's no estimation session In Progress
     </p>
     <p>
-    <form action="/jira/plugins/servlet/open-poker/session" method="post">
+    <form action="$contextPath/plugins/servlet/open-poker/session" method="post">
         <input name="issueId" value="$issueId" type="hidden"/>
         <input name="userId" value="$userId" type="hidden"/>
         <input name="action" type="submit" value="Start Estimation" class="aui-button"/>

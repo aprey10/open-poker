@@ -91,7 +91,7 @@
         <dependency>
             <groupId>com.atlassian.activeobjects</groupId>
             <artifactId>activeobjects-plugin</artifactId>
-            <version>3.2.9</version>
+            <version>${ao.version}</version>
             <scope>provided</scope>
         </dependency>
         <!-- Google Collections, useful utilities for manipulating collections -->
@@ -200,5 +200,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <lombok.version>1.18.12</lombok.version>
+        <hsql.version>1.8.0.10</hsql.version>
+        <slf4j-simple.version>1.6.2</slf4j-simple.version>
+        <ao.version>3.2.9</ao.version>
     </properties>
 </project>

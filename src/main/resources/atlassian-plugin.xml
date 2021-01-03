@@ -13,7 +13,7 @@
     <!-- add our web resources -->
     <web-resource key="open-poker-resources" name="open-poker Web Resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <dependency>com.atlassian.auiplugin:aui-select</dependency>
+        <dependency>com.atlassian.auiplugin:aui-select2</dependency>
         <dependency>com.atlassian.auiplugin:aui-tooltips</dependency>
         <resource type="download" name="open-poker.css" location="/css/open-poker.css"/>
         <resource type="download" name="open-poker.js" location="/js/open-poker.js"/>

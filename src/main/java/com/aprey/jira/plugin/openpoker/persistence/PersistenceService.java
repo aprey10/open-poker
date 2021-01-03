@@ -14,7 +14,6 @@ import java.util.function.Function;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
-import net.java.ao.Query;
 
 @Transactional
 @Scanned
@@ -24,11 +23,14 @@ public class PersistenceService {
     @ComponentImport
     private final ActiveObjects ao;
     private final EntityToObjConverter converter;
+    private final QueryBuilderService queryBuilder;
 
     @Inject
-    public PersistenceService(ActiveObjects ao, EntityToObjConverter entityToObjConverter) {
+    public PersistenceService(ActiveObjects ao, EntityToObjConverter converter,
+                              QueryBuilderService queryBuilderService) {
         this.ao = ao;
-        this.converter = entityToObjConverter;
+        this.converter = converter;
+        this.queryBuilder = queryBuilderService;
     }
 
     public void startSession(String issueId, long userId) {
@@ -40,6 +42,8 @@ public class PersistenceService {
         session.setModeratorId(userId);
         session.setSessionStatus(SessionStatus.IN_PROGRESS);
         session.setUnitOfMeasure(EstimationUnit.FIBONACCI);
+
+        System.out.println(session.getEntityType());
 
         session.save();
     }
@@ -73,9 +77,7 @@ public class PersistenceService {
 
     private Optional<EstimateEntity> findEstimate(final long estimatorId, final PokerSessionEntity session) {
         EstimateEntity[] estimates = ao.find(EstimateEntity.class,
-                                             Query.select()
-                                                  .where("ESTIMATOR_ID = ? AND POKER_SESSION_ID = ?",
-                                                         estimatorId, session));
+                                             queryBuilder.estimateWhereEstimatorIdAndSessionId(estimatorId, session));
         if (estimates.length == 0) {
             return Optional.empty();
         }
@@ -104,10 +106,8 @@ public class PersistenceService {
 
     private Optional<PokerSessionEntity> findSessionByIssueIdAndStatus(String issueId, SessionStatus status,
                                                                        Function<List<PokerSessionEntity>, Optional<PokerSessionEntity>> sessionFinder) {
-        PokerSessionEntity[] sessions = ao.find(PokerSessionEntity.class, Query.select().where("ISSUE_ID = ? AND " +
-                                                                                               "SESSION_STATUS = ?",
-                                                                                               issueId,
-                                                                                               status));
+        PokerSessionEntity[] sessions = ao.find(PokerSessionEntity.class,
+                                                queryBuilder.sessionWhereIssueIdAndStatus(issueId, status));
         if (sessions.length == 0) {
             return Optional.empty();
         }
