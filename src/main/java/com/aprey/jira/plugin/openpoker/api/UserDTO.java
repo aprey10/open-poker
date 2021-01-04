@@ -7,11 +7,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class EstimatorDTO {
+public class UserDTO {
     @XmlElement
     private String username;
     @XmlElement
     private String displayName;
+    @XmlElement
+    private String avatarUrl;
 
     public String getUsername() {
         return username;
@@ -21,11 +23,19 @@ public class EstimatorDTO {
         return displayName;
     }
 
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }

@@ -1,7 +1,6 @@
 package com.aprey.jira.plugin.openpoker.api;
 
 import com.aprey.jira.plugin.openpoker.SessionStatus;
-import com.aprey.jira.plugin.openpoker.api.EstimatorDTO;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -15,13 +14,13 @@ public class SessionDTO {
     @XmlElement
     private SessionStatus status;
     @XmlElement
-    private List<EstimatorDTO> estimators;
+    private List<UserDTO> estimators;
 
     public SessionStatus getStatus() {
         return status;
     }
 
-    public List<EstimatorDTO> getEstimators() {
+    public List<UserDTO> getEstimators() {
         return estimators;
     }
 
@@ -29,7 +28,7 @@ public class SessionDTO {
         this.status = status;
     }
 
-    public void setEstimators(List<EstimatorDTO> estimators) {
+    public void setEstimators(List<UserDTO> estimators) {
         this.estimators = estimators;
     }
 }

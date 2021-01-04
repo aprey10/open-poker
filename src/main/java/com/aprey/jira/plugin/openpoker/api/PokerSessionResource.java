@@ -1,6 +1,5 @@
 package com.aprey.jira.plugin.openpoker.api;
 
-import com.aprey.jira.plugin.openpoker.Estimate;
 import com.aprey.jira.plugin.openpoker.PokerSession;
 import com.aprey.jira.plugin.openpoker.UserNotFoundException;
 import com.aprey.jira.plugin.openpoker.persistence.PersistenceService;
@@ -26,17 +25,21 @@ public class PokerSessionResource {
     private final PersistenceService sessionService;
     @ComponentImport
     private final UserManager userManager;
+    private final UserConverter userConverter;
 
     @Inject
-    public PokerSessionResource(PersistenceService sessionService, UserManager userManager) {
+    public PokerSessionResource(PersistenceService sessionService, UserManager userManager,
+                                UserConverter userConverter) {
         this.sessionService = sessionService;
         this.userManager = userManager;
+        this.userConverter = userConverter;
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response get(@Context HttpServletRequest request) {
         final String issueId = request.getParameter("issueId");
+        final ApplicationUser user = getUser(request);
         Optional<PokerSession> activeSessionOpt = sessionService.getActiveSession(issueId);
         if (!activeSessionOpt.isPresent()) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -46,19 +49,16 @@ public class PokerSessionResource {
         SessionDTO sessionDTO = new SessionDTO();
         sessionDTO.setStatus(activeSession.getStatus());
         sessionDTO.setEstimators(activeSession.getEstimates().stream()
-                                              .map(this::buildDTO)
+                                              .map(e -> userConverter.buildUserDto(e.getEstimator(), user))
                                               .collect(Collectors.toList()));
 
         return Response.ok(sessionDTO).build();
     }
 
-    private EstimatorDTO buildDTO(Estimate estimate) {
-        EstimatorDTO dto = new EstimatorDTO();
-        ApplicationUser user = getUser(estimate.getEstimator().getId());
-        dto.setUsername(user.getUsername());
-        dto.setDisplayName(user.getDisplayName());
+    private ApplicationUser getUser(HttpServletRequest request) {
+        final Long userId = Long.parseLong(request.getParameter("userId"));
 
-        return dto;
+        return getUser(userId);
     }
 
     private ApplicationUser getUser(Long userId) {

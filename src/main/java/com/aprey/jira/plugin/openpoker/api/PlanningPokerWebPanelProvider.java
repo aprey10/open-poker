@@ -10,9 +10,11 @@ import com.atlassian.jira.plugin.webfragment.model.JiraHelper;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 @Scanned
@@ -22,10 +24,13 @@ public class PlanningPokerWebPanelProvider extends AbstractJiraContextProvider {
     private static final String ISSUE_ID_KEY = "issue";
 
     private final PersistenceService sessionService;
+    private final UserConverter userConverter;
 
     @Inject
-    public PlanningPokerWebPanelProvider(PersistenceService sessionService) {
+    public PlanningPokerWebPanelProvider(PersistenceService sessionService,
+                                         UserConverter userConverter) {
         this.sessionService = sessionService;
+        this.userConverter = userConverter;
     }
 
     @Override
@@ -33,7 +38,7 @@ public class PlanningPokerWebPanelProvider extends AbstractJiraContextProvider {
         final String issueId = ((Issue) jiraHelper.getContextParams().get(ISSUE_ID_KEY)).getKey();
         final Map<String, Object> contextMap = new HashMap<>();
         Optional<PokerSession> sessionOpt = findSession(issueId);
-        sessionOpt.ifPresent(pokerSession -> buildSessionView(pokerSession, contextMap, applicationUser.getId()));
+        sessionOpt.ifPresent(pokerSession -> buildSessionView(pokerSession, contextMap, applicationUser));
         contextMap.put("contextPath", jiraHelper.getRequest().getContextPath());
         contextMap.put("issueId", issueId);
         contextMap.put("userId", applicationUser.getId());
@@ -41,18 +46,33 @@ public class PlanningPokerWebPanelProvider extends AbstractJiraContextProvider {
         return contextMap;
     }
 
-    private void buildSessionView(PokerSession session, Map<String, Object> contextMap, Long currentUserId) {
+    private void buildSessionView(PokerSession session, Map<String, Object> contextMap, ApplicationUser currentUser) {
         boolean alreadyVoted = (session.getEstimates()
                                        .stream()
-                                       .anyMatch(e -> e.getEstimator().getId() == currentUserId));
+                                       .anyMatch(e -> e.getEstimator().equals(currentUser)));
+
+        List<EstimateDTO> estimates = session.getEstimates()
+                                             .stream()
+                                             .map(e -> toEstimateDto(currentUser, e))
+                                             .collect(Collectors.toList());
 
         SessionViewDTO viewDTO = SessionViewDTO.builder()
                                                .session(session)
                                                .alreadyVoted(alreadyVoted)
                                                .estimationGrades(FibonacciNumber.getValuesList())
+                                               .estimates(estimates)
+                                               .moderator(
+                                                       userConverter.buildUserDto(session.getModerator(), currentUser))
                                                .build();
 
         contextMap.put("viewDTO", viewDTO);
+    }
+
+    private EstimateDTO toEstimateDto(ApplicationUser currentUser, Estimate estimate) {
+        return EstimateDTO.builder()
+                          .grade(estimate.getGrade())
+                          .estimator(userConverter.buildUserDto(estimate.getEstimator(), currentUser))
+                          .build();
     }
 
     private Optional<PokerSession> findSession(String issueId) {

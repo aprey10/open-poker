@@ -43,8 +43,6 @@ public class PersistenceService {
         session.setSessionStatus(SessionStatus.IN_PROGRESS);
         session.setUnitOfMeasure(EstimationUnit.FIBONACCI);
 
-        System.out.println(session.getEntityType());
-
         session.save();
     }
 

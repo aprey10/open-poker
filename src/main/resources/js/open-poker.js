@@ -26,11 +26,12 @@ function opAUIInit() {
 
 function sync(url) {
     var issueId = $("#open-poker-js-issueId").val()
+    var userId = $("#open-poker-js-userId").val()
     $.ajax({
         url: url,
         contentType: 'application/json; charset=utf-8',
         dataType: "json",
-        data: {issueId: issueId}
+        data: {issueId: issueId, userId: userId}
     }).done(function (data) {
         if (data.status === "IN_PROGRESS") {
             syncEstimators(data.estimators);
@@ -51,7 +52,7 @@ function syncEstimators(estimatorsFromServer) {
 
     $.each(estimatorsFromServer, function (i, el) {
         if (doesNotContain(displayedEstimators, el.displayName)) {
-            addEstimator(el.username, el.displayName);
+            addEstimator(el.avatarUrl, el.displayName);
         }
     })
 }
@@ -69,9 +70,8 @@ function getEstimatorsFromView() {
     return estimators;
 }
 
-function addEstimator(username, displayName) {
-    var url = AJS.contextPath() + "/secure/useravatar?size=small&ownerId=" + username;
-    var img = $('<img />', {'src': url, 'alt': displayName});
+function addEstimator(avatarUrl, displayName) {
+    var img = $('<img />', {'src': avatarUrl, 'alt': displayName});
     var span = $('<span />', {
         'class': 'aui-avatar-inner op-estimator-tooltip',
         'title': displayName,

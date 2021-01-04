@@ -3,7 +3,6 @@ package com.aprey.jira.plugin.openpoker.persistence;
 import com.aprey.jira.plugin.openpoker.Estimate;
 import com.aprey.jira.plugin.openpoker.FibonacciNumber;
 import com.aprey.jira.plugin.openpoker.PokerSession;
-import com.aprey.jira.plugin.openpoker.User;
 import com.aprey.jira.plugin.openpoker.UserNotFoundException;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserManager;
@@ -29,7 +28,7 @@ class EntityToObjConverter {
 
     public Estimate toObj(EstimateEntity entity) {
         return Estimate.builder()
-                       .estimator(buildUser(entity.getEstimatorId()))
+                       .estimator(getUser(entity.getEstimatorId()))
                        .grade(FibonacciNumber.findById(entity.getGradeId()).getValue())
                        .build();
     }
@@ -38,7 +37,7 @@ class EntityToObjConverter {
         return PokerSession.builder()
                            .status(entity.getSessionStatus())
                            .issueId(entity.getIssueId())
-                           .moderator(buildUser(entity.getModeratorId()))
+                           .moderator(getUser(entity.getModeratorId()))
                            .completionDate(entity.getCompletionDate())
                            .estimates(buildEstimates(entity.getEstimates()))
                            .build();
@@ -48,14 +47,8 @@ class EntityToObjConverter {
         return Arrays.stream(entities).map(this::toObj).collect(Collectors.toList());
     }
 
-    private User buildUser(long userId) {
-        ApplicationUser applicationUser = userManager.getUserById(userId).orElseThrow(() -> new UserNotFoundException(
+    private ApplicationUser getUser(long userId) {
+        return userManager.getUserById(userId).orElseThrow(() -> new UserNotFoundException(
                 "User with id " + userId + " is not found"));
-
-        return User.builder()
-                   .username(applicationUser.getUsername())
-                   .fullName(applicationUser.getDisplayName())
-                   .id(applicationUser.getId())
-                   .build();
     }
 }

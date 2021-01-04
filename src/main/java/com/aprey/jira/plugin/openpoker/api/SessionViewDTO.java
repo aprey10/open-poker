@@ -10,6 +10,8 @@ import lombok.Value;
 @Value
 public class SessionViewDTO {
     private final PokerSession session;
+    private final UserDTO moderator;
+    private final List<EstimateDTO> estimates;
     private final List<EstimationGrade> estimationGrades;
     private final boolean alreadyVoted;
 }
