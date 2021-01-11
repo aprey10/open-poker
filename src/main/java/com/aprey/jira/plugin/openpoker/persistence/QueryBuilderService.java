@@ -16,4 +16,8 @@ public class QueryBuilderService {
     Query estimateWhereEstimatorIdAndSessionId(Long estimatorId, PokerSessionEntity session) {
         return Query.select().where("POKER_SESSION_ID = ? AND ESTIMATOR_ID = ?", session, estimatorId);
     }
+
+    Query sessionWhereIssuerId(String issueId) {
+        return Query.select().where("ISSUE_ID = ?", issueId);
+    }
 }

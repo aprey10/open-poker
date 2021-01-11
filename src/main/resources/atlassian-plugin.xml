@@ -16,7 +16,9 @@
         <dependency>com.atlassian.auiplugin:aui-select2</dependency>
         <dependency>com.atlassian.auiplugin:aui-tooltips</dependency>
         <resource type="download" name="open-poker.css" location="/css/open-poker.css"/>
+        <resource type="download" name="Chart.min.css" location="/css/chart/Chart.min.css"/>
         <resource type="download" name="open-poker.js" location="/js/open-poker.js"/>
+        <resource type="download" name="Chart.min.js" location="/js/chart/Chart.min.js"/>
         <resource type="download" name="images/" location="/images"/>
         <context>open-poker</context>
         <context>jira.view.issue</context>

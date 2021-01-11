@@ -102,22 +102,29 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
                             alt="admin"></span></span>
                     $estimate.getEstimator().getDisplayName()
                 </td>
-                <td headers="estimate">
+                <td headers="estimate" class="open-poker-estimate-grade">
                     $estimate.getGrade()
                 </td>
             </tr>
             #end
         </tbody>
     </table>
-    <p>
-    <form action="$contextPath/plugins/servlet/open-poker/session" method="post">
-        <input name="issueId" value="$issueId" type="hidden"/>
-        <input name="userId" value="$userId" type="hidden"/>
-        <input name="action" type="submit" value="Re-estimate" class="aui-button aui-button-primary"/>
-    </form>
-    </p>
+    <div style="width: 35%; margin: 20px; max-width: 200px;">
+        <canvas id="open-poker-results-chart" width="100" height="100"></canvas>
+    </div>
+    <div>
+        <p>
+        <form action="$contextPath/plugins/servlet/open-poker/session" method="post">
+            <input name="issueId" value="$issueId" type="hidden"/>
+            <input name="userId" value="$userId" type="hidden"/>
+            <input name="action" type="submit" value="Re-estimate" class="aui-button aui-button-primary"/>
+            <input name="action" type="submit" value="Delete" class="aui-button"/>
+        </form>
+        </p>
+    </div>
+
     #else
-## TODO: remove code duplication
+        ## TODO: remove code duplication
     <div>
         <p>
             There's no estimation session In Progress

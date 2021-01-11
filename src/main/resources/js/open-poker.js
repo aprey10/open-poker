@@ -22,6 +22,67 @@ function opSyncInit() {
 function opAUIInit() {
     $(".op-estimator-tooltip").tooltip();
     $(".op-aui-select").auiSelect2();
+    renderChart();
+}
+
+function renderChart() {
+    if ($("#open-poker-js-session-status").val() !== "FINISHED") {
+        return;
+    }
+
+    var estimatesMap = {};
+    $.each($(".open-poker-estimate-grade"), function (i, e) {
+        var grade = $.trim($(e).html());
+        if (estimatesMap[grade]) {
+            estimatesMap[grade]++;
+        } else {
+            estimatesMap[grade] = 1;
+        }
+    })
+
+    var chartData = {
+        data: [], labels: [], colors: []
+    }
+    var index = 0;
+    $.each(estimatesMap, function (k, v) {
+        chartData.data.push(v);
+        chartData.labels.push(k);
+        chartData.colors.push(getColor(index))
+        index++;
+    });
+
+    initiateChart(chartData);
+}
+
+function initiateChart(chartData) {
+    var data = {
+        datasets: [{
+            data: chartData.data,
+            backgroundColor: chartData.colors
+        }],
+        labels: chartData.labels
+    };
+
+    new Chart($("#open-poker-results-chart"), {
+        type: 'doughnut',
+        data: data,
+        options: {
+            legend: {
+                display: false
+            },
+            tooltips: {
+                displayColors: false,
+                callbacks: {
+                    title: function (tooltipItems, data) {
+                        return '';
+                    },
+                    label: function (tooltipItem, data) {
+                        return data.labels[tooltipItem.index];
+                    }
+                }
+            }
+        }
+    });
 }
 
 function sync(url) {
@@ -81,4 +142,28 @@ function addEstimator(avatarUrl, displayName) {
     var outerSpan = $('<span />', {'class': 'aui-avatar aui-avatar-small estimator-avatar'}).append(span);
 
     $('#open-poker-js-estimators').append(outerSpan);
+}
+
+function getColor(index) {
+    var colorArray = [
+        '#4C9AFF',
+        '#C1C7D0',
+        '#79E2F2',
+        '#8777D9',
+        '#79F2C0',
+        '#FFAB00',
+        '#00B8D9',
+        '#0052CC',
+        '#6554C0',
+        '#344563',
+        '#C1C7D0',
+        '#403294',
+
+    ];
+
+    if (index > colorArray.length) {
+        return '#C1C7D0';
+    }
+
+    return colorArray[index];
 }

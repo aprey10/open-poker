@@ -73,6 +73,24 @@ public class PersistenceService {
         session.save();
     }
 
+    public void deleteSessions(String issueId) {
+        PokerSessionEntity[] sessions = ao.find(PokerSessionEntity.class,
+                                                queryBuilder.sessionWhereIssuerId(issueId));
+        if (sessions == null) {
+            return;
+        }
+
+        Arrays.stream(sessions).forEach(this::deleteSessionAndEstimates);
+    }
+
+    private void deleteSessionAndEstimates(PokerSessionEntity session) {
+        if (session.getEstimates() != null) {
+            Arrays.stream(session.getEstimates()).forEach(ao::delete);
+        }
+
+        ao.delete(session);
+    }
+
     private Optional<EstimateEntity> findEstimate(final long estimatorId, final PokerSessionEntity session) {
         EstimateEntity[] estimates = ao.find(EstimateEntity.class,
                                              queryBuilder.estimateWhereEstimatorIdAndSessionId(estimatorId, session));
