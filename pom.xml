@@ -24,10 +24,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.aprey.jira.plugin.openpoker</groupId>
     <artifactId>open-poker</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <organization>
         <name>Andriy Preizner Production</name>
-        <url>http://www.example.com/TODO</url>
+        <url>https://www.linkedin.com/in/andrewpreizner/</url>
     </organization>
     <name>open-poker</name>
     <description>Jira plugin which adds simple Planning poker to the issue view</description>
