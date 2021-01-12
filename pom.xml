@@ -24,7 +24,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.aprey.jira.plugin.openpoker</groupId>
     <artifactId>open-poker</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <organization>
         <name>Andriy Preizner Production</name>
         <url>https://www.linkedin.com/in/andrewpreizner/</url>
