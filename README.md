@@ -5,7 +5,7 @@
     Jira plugin which adds simple and handy Planning (Scrum) Poker to the Issue View page.
 </p>
 
-![Open Poker video demo](https://github.com/aprey10/open-poker/blob/develop/doc/open.poker_demo.gif)
+[![Demo](https://www.youtube.com/watch?v=61iEyZg8JZw)](https://www.youtube.com/watch?v=61iEyZg8JZw)
 
 ### Actions description
 
