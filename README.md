@@ -1,3 +1,5 @@
+[![GitHub license](https://img.shields.io/github/license/aprey10/open-poker)](https://github.com/aprey10/open-poker/blob/main/LICENSE)
+
 <p align="center">
     <img src="https://user-images.githubusercontent.com/4034723/104251770-71453a80-543e-11eb-8a7b-9bb0bebbb0f9.png"><br/>
     Jira plugin which adds simple and handy Planning (Scrum) Poker to the Issue View page.
