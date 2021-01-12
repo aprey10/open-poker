@@ -18,3 +18,8 @@
 **Re-estimate** - starts new estimation session.
 
 **Delete** - deletes all estimation sessions and estimates related to the current jira issue.
+
+
+### Data security and privacy statement
+
+This plugin doesn't store or use any customer data.
