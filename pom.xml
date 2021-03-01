@@ -144,6 +144,12 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slfj.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -222,5 +228,6 @@
         <hsql.version>1.8.0.10</hsql.version>
         <slf4j-simple.version>1.6.2</slf4j-simple.version>
         <ao.version>3.2.9</ao.version>
+        <slfj.version>1.7.30</slfj.version>
     </properties>
 </project>

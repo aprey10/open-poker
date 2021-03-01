@@ -49,6 +49,7 @@ class EntityToObjConverter {
         return Estimate.builder()
                        .estimator(getUser(entity.getEstimatorId()))
                        .grade(FibonacciNumber.findById(entity.getGradeId()).getValue())
+                       .gradeId(entity.getGradeId())
                        .build();
     }
 
@@ -59,6 +60,7 @@ class EntityToObjConverter {
                            .moderator(getUser(entity.getModeratorId()))
                            .completionDate(entity.getCompletionDate())
                            .estimates(buildEstimates(entity.getEstimates()))
+                           .estimationGrades(FibonacciNumber.getValuesList())
                            .build();
     }
 

@@ -121,12 +121,48 @@ public class PersistenceServiceTest {
         when(queryBuilder.sessionWhereIssueIdAndStatus(ISSUE_ID, SessionStatus.IN_PROGRESS)).thenReturn(sessionQuery);
         when(ao.find(eq(PokerSessionEntity.class), eq(sessionQuery))).thenReturn(
                 new PokerSessionEntity[]{sessionEntity});
+        when(sessionEntity.getEstimates()).thenReturn(new EstimateEntity[]{estimateEntity});
 
         service.stopSession(ISSUE_ID);
 
         verify(sessionEntity, times(1)).setSessionStatus(SessionStatus.FINISHED);
         verify(sessionEntity, times(1)).setCompletionDate(anyLong());
         verify(sessionEntity, times(1)).save();
+    }
+
+    @Test
+    public void sessionIsStoppedAndDeleted() {
+        when(queryBuilder.sessionWhereIssueIdAndStatus(ISSUE_ID, SessionStatus.IN_PROGRESS)).thenReturn(sessionQuery);
+        when(ao.find(PokerSessionEntity.class, sessionQuery)).thenReturn(new PokerSessionEntity[]{sessionEntity});
+        when(sessionEntity.getEstimates()).thenReturn(new EstimateEntity[]{});
+
+        final Query allSessionsQuery = mock(Query.class);
+        when(queryBuilder.sessionWhereIssuerId(ISSUE_ID)).thenReturn(allSessionsQuery);
+        when(ao.find(PokerSessionEntity.class, allSessionsQuery)).thenReturn(new PokerSessionEntity[]{sessionEntity});
+
+        service.stopSession(ISSUE_ID);
+
+        verify(ao, times(1)).delete(sessionEntity);
+        verify(sessionEntity, times(0)).setSessionStatus(SessionStatus.FINISHED);
+        verify(sessionEntity, times(0)).setCompletionDate(anyLong());
+        verify(sessionEntity, times(0)).save();
+    }
+
+    @Test
+    public void allSessionsAreWithEstimatesDeleted() {
+        final Query allSessionsQuery = mock(Query.class);
+        final PokerSessionEntity sessionEntity2 = mock(PokerSessionEntity.class);
+
+        when(sessionEntity2.getEstimates()).thenReturn(new EstimateEntity[]{estimateEntity});
+        when(queryBuilder.sessionWhereIssuerId(ISSUE_ID)).thenReturn(allSessionsQuery);
+        when(ao.find(PokerSessionEntity.class, allSessionsQuery)).thenReturn(
+                new PokerSessionEntity[]{sessionEntity, sessionEntity2});
+
+        service.deleteSessions(ISSUE_ID);
+
+        verify(ao, times(1)).delete(sessionEntity);
+        verify(ao, times(1)).delete(sessionEntity2);
+        verify(ao, times(1)).delete(estimateEntity);
     }
 
     @Test

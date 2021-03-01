@@ -35,7 +35,7 @@ public class PokerSessionServlet extends HttpServlet {
     private final ImmutableMap<SessionAction, ActionProcessor> actionProcessorMap;
 
     @Inject
-    public PokerSessionServlet(PersistenceService persistenceService) {
+    public PokerSessionServlet(PersistenceService persistenceService, ApplyVoteProcessor applyVoteProcessor) {
         this.persistenceService = checkNotNull(persistenceService);
         this.actionProcessorMap = ImmutableMap.<SessionAction, ActionProcessor>builder()
                 .put(SessionAction.START_SESSION, new StartSessionProcessor())
@@ -43,6 +43,7 @@ public class PokerSessionServlet extends HttpServlet {
                 .put(SessionAction.VOTE, new VoteProcessor())
                 .put(SessionAction.RE_ESTIMATE, new StartSessionProcessor())
                 .put(SessionAction.DELETE, new DeleteSessionProcessor())
+                .put(SessionAction.APPLY_ESTIMATE, applyVoteProcessor)
                 .build();
     }
 
