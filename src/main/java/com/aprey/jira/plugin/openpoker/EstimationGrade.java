@@ -24,4 +24,6 @@ public interface EstimationGrade {
     int getId();
 
     String getValue();
+
+    boolean isApplicable();
 }

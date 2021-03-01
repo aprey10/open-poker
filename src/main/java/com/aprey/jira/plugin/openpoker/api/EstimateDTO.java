@@ -27,4 +27,5 @@ import lombok.Value;
 public class EstimateDTO {
     private final UserDTO estimator;
     private final String grade;
+    private final int gradeId;
 }

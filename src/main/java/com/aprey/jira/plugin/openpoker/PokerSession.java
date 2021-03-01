@@ -31,5 +31,6 @@ public class PokerSession {
     private final String issueId;
     private final SessionStatus status;
     private final long completionDate;
+    private final List<EstimationGrade> estimationGrades;
     private final List<Estimate> estimates;
 }

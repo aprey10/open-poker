@@ -33,10 +33,12 @@ import java.util.function.Function;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 @Transactional
 @Scanned
 @Named
+@Slf4j
 public class PersistenceService {
 
     @ComponentImport
@@ -86,6 +88,12 @@ public class PersistenceService {
             return;
         }
         PokerSessionEntity session = sessionOpt.get();
+
+        if (session.getEstimates().length == 0) {
+            deleteSessions(issueId);
+            return;
+        }
+
         session.setSessionStatus(SessionStatus.FINISHED);
         session.setCompletionDate(System.currentTimeMillis());
 

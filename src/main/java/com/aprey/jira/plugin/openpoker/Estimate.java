@@ -28,4 +28,5 @@ import lombok.Value;
 public class Estimate {
     private final ApplicationUser estimator;
     private final String grade;
+    private final int gradeId;
 }
