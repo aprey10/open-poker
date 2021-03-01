@@ -1,3 +1,5 @@
+[![GitHub license](https://img.shields.io/github/license/aprey10/open-poker)](https://github.com/aprey10/open-poker/blob/main/LICENSE)
+
 <p align="center">
     <img src="https://user-images.githubusercontent.com/4034723/104251770-71453a80-543e-11eb-8a7b-9bb0bebbb0f9.png"><br/>
     Jira plugin which adds simple and handy Planning (Scrum) Poker to the Issue View page.
@@ -16,3 +18,8 @@
 **Re-estimate** - starts new estimation session.
 
 **Delete** - deletes all estimation sessions and estimates related to the current jira issue.
+
+
+### Data security and privacy statement
+
+This plugin doesn't store or use any customer data.
