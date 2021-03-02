@@ -29,6 +29,7 @@ import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import java.text.DecimalFormat;
+import java.util.Objects;
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -56,7 +57,7 @@ public class IssueServiceFacade {
         this.issueManager = issueManager;
     }
 
-    public void applyEstimate(int estimate, ApplicationUser user, String issueId) {
+    public void applyEstimate(String estimate, ApplicationUser user, String issueId) {
         Issue issue = issueManager.getIssueObject(issueId);
         Optional<CustomField> field = getField(issue);
         if (!field.isPresent()) {
@@ -82,9 +83,9 @@ public class IssueServiceFacade {
         log.info("The issue {} has been updated with a new story point value", issueId);
     }
 
-    private IssueInputParameters buildInputParams(long fieldId, int estimate) {
+    private IssueInputParameters buildInputParams(long fieldId, String estimate) {
         IssueInputParameters issueInputParameters = issueService.newIssueInputParameters();
-        issueInputParameters.addCustomFieldValue(fieldId, String.valueOf(estimate));
+        issueInputParameters.addCustomFieldValue(fieldId, estimate);
         issueInputParameters.setSkipScreenCheck(true);
         issueInputParameters.setRetainExistingValuesWhenParameterNotProvided(true, true);
 
@@ -104,7 +105,8 @@ public class IssueServiceFacade {
                                                    .stream()
                                                    .filter(f -> f.getFieldName().equals(STORY_POINT_FILED_NAME))
                                                    .map(f -> f.getValue(issue))
-                                                   .findFirst();
+                                                   .filter(Objects::nonNull)
+                                                   .findAny();
         if (!value.isPresent()) {
             return Optional.empty();
         }

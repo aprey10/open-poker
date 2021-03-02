@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 public class IssueServiceFacadeTest {
 
     private static final String ISSUE_ID = "TEST-1";
-    private static final int ESTIMATE = 8;
+    private static final String ESTIMATE = "8";
     private static final long FIELD_ID = 1L;
     private static final long ISSUE_ID_LONG = 1L;
 

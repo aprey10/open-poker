@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.aprey.jira.plugin.openpoker;
+package com.aprey.jira.plugin.openpoker.persistence;
 
-public enum EstimationUnit {
-    FIBONACCI, CLASSIC_PLANNING, T_SHIRT_SIZE;
+public enum GradesDeckType {
+    Fibona
 }

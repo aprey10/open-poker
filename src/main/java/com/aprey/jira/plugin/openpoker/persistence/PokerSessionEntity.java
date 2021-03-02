@@ -41,9 +41,9 @@ public interface PokerSessionEntity extends Entity {
 
     void setSessionStatus(SessionStatus status);
 
-    EstimationUnit getEstimationUnit();
-
     void setUnitOfMeasure(EstimationUnit estimationUnit);
+
+    EstimationUnit getUnitOfMeasure();
 
     void setCompletionDate(long timestamp);
 

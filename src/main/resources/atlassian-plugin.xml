@@ -55,6 +55,7 @@
         <description>The module configuring the Active Objects service used by this plugin</description>
         <entity>com.aprey.jira.plugin.openpoker.persistence.PokerSessionEntity</entity>
         <entity>com.aprey.jira.plugin.openpoker.persistence.EstimateEntity</entity>
+        <entity>com.aprey.jira.plugin.openpoker.persistence.FinalEstEntity</entity>
     </ao>
     <servlet name="Poker Planning Servlet" class="com.aprey.jira.plugin.openpoker.api.PokerSessionServlet"
              key="poker-session">

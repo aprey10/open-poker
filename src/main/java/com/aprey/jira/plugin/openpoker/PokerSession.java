@@ -33,4 +33,5 @@ public class PokerSession {
     private final long completionDate;
     private final List<EstimationGrade> estimationGrades;
     private final List<Estimate> estimates;
+    private final EstimationUnit estimationUnit;
 }

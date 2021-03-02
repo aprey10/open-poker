@@ -17,8 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.aprey.jira.plugin.openpoker;
+package com.aprey.jira.plugin.openpoker.persistence;
 
-public enum EstimationUnit {
-    FIBONACCI, CLASSIC_PLANNING, T_SHIRT_SIZE;
+import com.aprey.jira.plugin.openpoker.EstimationGrade;
+import com.aprey.jira.plugin.openpoker.Deck;
+import java.util.List;
+
+public class ClassicPlanningDeck implements Deck {
+
+    @Override
+    public List<EstimationGrade> getGrades() {
+        return ClassicPlanning.getValuesList();
+    }
+
+    @Override
+    public EstimationGrade getGrade(int gradeId) {
+        return ClassicPlanning.findById(gradeId);
+    }
 }

@@ -56,10 +56,10 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
                 </dd>
             </dl>
         </li>
-        #if($currentEstimate)
+        #if($currentEstimate && !$viewDTO.getEstimation().isAlreadyVoted())
             <li class="people-details">
                 <dl>
-                    <dt>Previous Estimate:</dt>
+                    <dt>Current Estimate:</dt>
                     <dd>
                         <aui-badge class="aui-badge-primary">$currentEstimate</aui-badge>
                     </dd>
@@ -78,7 +78,7 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
                 <select name="estimationGradeId" placeholder="Choose Estimate" style="max-width: 170px"
                         no-empty-values="false" class="op-aui-select">
                     <option class="imagebacked" value="">Choose estimate</option>
-                    #foreach($grade in $viewDTO.getEstimation().getGradesToChoose())
+                    #foreach($grade in $viewDTO.getEstimation().getEstimationGrades())
                         <option class="imagebacked" value="$grade.getId()">$grade.getValue()</option>
                     #end
                 </select>
@@ -123,31 +123,25 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
         <canvas id="open-poker-results-chart" width="100" height="100"></canvas>
     </div>
     <form action="$contextPath/plugins/servlet/open-poker/session" method="post" class="aui left-aligned-form">
-        #set( $greadesToApplyEmpty = $viewDTO.getEstimation().getGradesToApply().isEmpty())
-        #if($greadesToApplyEmpty == false)
-            <div class="field-group">
-                <label for="estimationInfo">Final Estimate:</label>
-                <select name="resultingEstimate" placeholder="Resulting Estimate" style="max-width: 70px"
-                        no-empty-values="false" class="op-aui-select">
-                    #foreach($grade in $viewDTO.getEstimation().getGradesToApply())
-                        #if($grade.getId() == $viewDTO.getEstimation().getAverageEstimateId())
-                            <option class="imagebacked" value="$grade.getValue()" selected>$grade.getValue()</option>
-                        #else
-                            <option class="imagebacked" value="$grade.getValue()">$grade.getValue()</option>
-                        #end
+
+        <div class="field-group">
+            <label for="estimationInfo">Final Estimate:</label>
+            <select name="finalEstimateId" placeholder="Resulting Estimate" style="max-width: 140px"
+                    no-empty-values="false" class="op-aui-select">
+                #foreach($grade in $viewDTO.getEstimation().getEstimationGrades())
+                    #if($grade.getId() == $viewDTO.getEstimation().getAverageEstimateId())
+                        <option class="imagebacked" value="$grade.getId()" selected>$grade.getValue()</option>
+                    #else
+                        <option class="imagebacked" value="$grade.getId()">$grade.getValue()</option>
                     #end
-                </select>
-            </div>
-        #end
+                #end
+            </select>
+        </div>
         <div style="margin-top: 20px">
             <p>
                 <input name="issueId" value="$issueId" type="hidden"/>
                 <input name="userId" value="$userId" type="hidden"/>
-                #if($greadesToApplyEmpty == false)
-                    <input name="action" type="submit" value="Apply Estimate" class="aui-button aui-button-primary"/>
-                #else
-                    <input name="action" type="submit" value="End Session" class="aui-button aui-button-primary"/>
-                #end
+                <input name="action" type="submit" value="Apply Estimate" class="aui-button aui-button-primary"/>
                 <input name="action" type="submit" value="Re-estimate" class="aui-button"/>
             </p>
         </div>
@@ -155,27 +149,39 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
     #end
 #else
 <div>
-    #if($currentEstimate)
-        <ul class="item-details">
-            <li class="people-details">
-                <dl>
-                    <dt>Current Estimate:</dt>
-                    <dd>
-                        <aui-badge class="aui-badge-primary">$currentEstimate</aui-badge>
-                    </dd>
-                </dl>
-            </li>
-        </ul>
-    #end
     <p>
-    <form action="$contextPath/plugins/servlet/open-poker/session" method="post">
-        <input name="issueId" value="$issueId" type="hidden"/>
-        <input name="userId" value="$userId" type="hidden"/>
+    <form action="$contextPath/plugins/servlet/open-poker/session" method="post" class="aui left-aligned-form">
         #if($currentEstimate)
-            <input name="action" type="submit" value="Re-estimate" class="aui-button"/>
-        #else
-            <input name="action" type="submit" value="Start Estimation" class="aui-button"/>
+            <ul class="item-details">
+                <li class="people-details">
+                    <dl>
+                        <dt>Current Estimate:</dt>
+                        <dd>
+                            <aui-badge class="aui-badge-primary">$currentEstimate</aui-badge>
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
         #end
+        <div class="field-group">
+            <label for="estimationInfo">Estimation Scale:</label>
+            <select name="estimationScale" placeholder="Choose Estimate" style="max-width: 170px"
+                    no-empty-values="false" class="op-aui-select">
+                #foreach($unit in $estimationUnits)
+                    <option class="imagebacked" value="$unit.getName()">$unit.getName()</option>
+                #end
+            </select>
+        </div>
+
+        <div style="margin-top: 20px">
+            <input name="issueId" value="$issueId" type="hidden"/>
+            <input name="userId" value="$userId" type="hidden"/>
+            #if($currentEstimate)
+                <input name="action" type="submit" value="Re-estimate" class="aui-button"/>
+            #else
+                <input name="action" type="submit" value="Start Estimation" class="aui-button"/>
+            #end
+        </div>
     </form>
     </p>
 </div>

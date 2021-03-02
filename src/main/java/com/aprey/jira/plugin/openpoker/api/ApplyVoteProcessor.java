@@ -19,7 +19,6 @@
 
 package com.aprey.jira.plugin.openpoker.api;
 
-import com.aprey.jira.plugin.openpoker.IssueServiceFacade;
 import com.aprey.jira.plugin.openpoker.persistence.PersistenceService;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserManager;
@@ -35,31 +34,28 @@ import lombok.extern.slf4j.Slf4j;
 @Scanned
 @Slf4j
 public class ApplyVoteProcessor implements ActionProcessor {
-    private static final String ESTIMATE_FILED = "resultingEstimate";
+
+    private static final String ESTIMATE_FILED = "finalEstimateId";
     private static final String USER_ID_FIELD = "userId";
 
     @ComponentImport
     private final UserManager userManager;
-    private final IssueServiceFacade issueServiceFacade;
 
     @Inject
-    public ApplyVoteProcessor(UserManager userManager,
-                              IssueServiceFacade issueServiceFacade) {
+    public ApplyVoteProcessor(UserManager userManager) {
         this.userManager = userManager;
-        this.issueServiceFacade = issueServiceFacade;
     }
 
     @Override
     public void process(PersistenceService persistenceService, HttpServletRequest request, String issueId) {
         final long userId = Long.parseLong(request.getParameter(USER_ID_FIELD));
-        final int estimate = Integer.parseInt(request.getParameter(ESTIMATE_FILED));
+        final int estimateId = Integer.parseInt(request.getParameter(ESTIMATE_FILED));
         Optional<ApplicationUser> applicationUser = userManager.getUserById(userId);
         if (!applicationUser.isPresent()) {
             log.error("Application user is not found by {} id", userId);
             return;
         }
 
-        issueServiceFacade.applyEstimate(estimate, applicationUser.get(), issueId);
-        persistenceService.deleteSessions(issueId);
+        persistenceService.applyFinalEstimate(issueId, estimateId, applicationUser.get());
     }
 }

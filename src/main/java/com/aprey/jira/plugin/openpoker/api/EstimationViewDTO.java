@@ -33,8 +33,7 @@ import static java.util.stream.Collectors.groupingBy;
 @Builder
 public class EstimationViewDTO {
     private final List<EstimateDTO> estimates;
-    private final List<EstimationGrade> gradesToChoose;
-    private final List<EstimationGrade> gradesToApply;
+    private final List<EstimationGrade> estimationGrades;
     private final boolean alreadyVoted;
     private final boolean applicableGrades;
 

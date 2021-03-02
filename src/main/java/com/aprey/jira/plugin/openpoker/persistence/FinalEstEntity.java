@@ -17,8 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.aprey.jira.plugin.openpoker;
+package com.aprey.jira.plugin.openpoker.persistence;
 
-public enum EstimationUnit {
-    FIBONACCI, CLASSIC_PLANNING, T_SHIRT_SIZE;
+import net.java.ao.Entity;
+import net.java.ao.schema.Index;
+import net.java.ao.schema.Indexes;
+
+@Indexes(@Index(name = "issueId", methodNames = {"getIssueId"}))
+public interface FinalEstEntity extends Entity {
+
+    String getIssueId();
+
+    void setIssueId(String issueId);
+
+    String getEstimateValue();
+
+    void setEstimateValue(String estimate);
 }

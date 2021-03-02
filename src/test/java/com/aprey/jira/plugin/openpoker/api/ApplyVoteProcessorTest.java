@@ -19,7 +19,6 @@
 
 package com.aprey.jira.plugin.openpoker.api;
 
-import com.aprey.jira.plugin.openpoker.IssueServiceFacade;
 import com.aprey.jira.plugin.openpoker.persistence.PersistenceService;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserManager;
@@ -37,37 +36,35 @@ public class ApplyVoteProcessorTest {
 
     private static final String ISSUE_ID = "TEST-1";
     private static final long USER_ID = 1;
-    private static final Integer ESTIMATE = 8;
+    private static final int ESTIMATE_ID = 2;
 
     private final PersistenceService persistenceService = mock(PersistenceService.class);
-    private final IssueServiceFacade issueServiceFacade = mock(IssueServiceFacade.class);
     private final UserManager userManager = mock(UserManager.class);
     private final HttpServletRequest request = mock(HttpServletRequest.class);
     private final ApplicationUser applicationUser = mock(ApplicationUser.class);
 
-    private final ApplyVoteProcessor applyVoteProcessor = new ApplyVoteProcessor(userManager, issueServiceFacade);
+    private final ApplyVoteProcessor applyVoteProcessor = new ApplyVoteProcessor(userManager);
 
     @Test
     public void estimateIsAppliedAndSessionIsDeleted() {
         when(request.getParameter("userId")).thenReturn(String.valueOf(USER_ID));
-        when(request.getParameter("resultingEstimate")).thenReturn(String.valueOf(ESTIMATE));
+        when(request.getParameter("finalEstimateId")).thenReturn(String.valueOf(ESTIMATE_ID));
         when(userManager.getUserById(USER_ID)).thenReturn(Optional.of(applicationUser));
 
         applyVoteProcessor.process(persistenceService, request, ISSUE_ID);
 
-        verify(issueServiceFacade, times(1)).applyEstimate(ESTIMATE, applicationUser, ISSUE_ID);
-        verify(persistenceService, times(1)).deleteSessions(ISSUE_ID);
+        verify(persistenceService, times(1)).applyFinalEstimate(ISSUE_ID, ESTIMATE_ID,
+                                                                applicationUser);
     }
 
     @Test
     public void estimateIsNotAppliedIfUserIsNotFound() {
         when(request.getParameter("userId")).thenReturn(String.valueOf(USER_ID));
-        when(request.getParameter("resultingEstimate")).thenReturn(String.valueOf(ESTIMATE));
+        when(request.getParameter("finalEstimateId")).thenReturn(String.valueOf(ESTIMATE_ID));
         when(userManager.getUserById(USER_ID)).thenReturn(Optional.empty());
 
         applyVoteProcessor.process(persistenceService, request, ISSUE_ID);
 
-        verifyZeroInteractions(issueServiceFacade);
         verifyZeroInteractions(persistenceService);
     }
 }

@@ -20,8 +20,7 @@
 package com.aprey.jira.plugin.openpoker.api;
 
 import com.aprey.jira.plugin.openpoker.Estimate;
-import com.aprey.jira.plugin.openpoker.EstimationGrade;
-import com.aprey.jira.plugin.openpoker.IssueServiceFacade;
+import com.aprey.jira.plugin.openpoker.EstimationScale;
 import com.aprey.jira.plugin.openpoker.PokerSession;
 import com.aprey.jira.plugin.openpoker.persistence.PersistenceService;
 import com.atlassian.jira.issue.Issue;
@@ -47,14 +46,12 @@ public class PlanningPokerWebPanelProvider extends AbstractJiraContextProvider {
 
     private final PersistenceService sessionService;
     private final UserConverter userConverter;
-    private final IssueServiceFacade issueServiceFacade;
 
     @Inject
     public PlanningPokerWebPanelProvider(PersistenceService sessionService,
-                                         UserConverter userConverter, IssueServiceFacade issueServiceFacade) {
+                                         UserConverter userConverter) {
         this.sessionService = sessionService;
         this.userConverter = userConverter;
-        this.issueServiceFacade = issueServiceFacade;
     }
 
     @Override
@@ -66,7 +63,8 @@ public class PlanningPokerWebPanelProvider extends AbstractJiraContextProvider {
         contextMap.put("contextPath", jiraHelper.getRequest().getContextPath());
         contextMap.put("issueId", issueId);
         contextMap.put("userId", applicationUser.getId());
-        issueServiceFacade.getStoryPoints(issueId).ifPresent(v -> contextMap.put("currentEstimate", v));
+        contextMap.put("estimationUnits", EstimationScale.getValues());
+        sessionService.getFinaleEstimate(issueId).ifPresent(v -> contextMap.put("currentEstimate", v));
         return contextMap;
     }
 
@@ -93,11 +91,8 @@ public class PlanningPokerWebPanelProvider extends AbstractJiraContextProvider {
 
         return EstimationViewDTO.builder()
                                 .alreadyVoted(alreadyVoted)
-                                .gradesToChoose(session.getEstimationGrades())
+                                .estimationGrades(session.getEstimationGrades())
                                 .estimates(estimates)
-                                .gradesToApply(session.getEstimationGrades().stream()
-                                                      .filter(EstimationGrade::isApplicable)
-                                                      .collect(Collectors.toList()))
                                 .build();
     }
 
