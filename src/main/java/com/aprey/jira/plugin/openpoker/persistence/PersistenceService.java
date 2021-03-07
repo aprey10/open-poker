@@ -19,10 +19,13 @@
 
 package com.aprey.jira.plugin.openpoker.persistence;
 
+import com.aprey.jira.plugin.openpoker.EstimationGrade;
 import com.aprey.jira.plugin.openpoker.EstimationUnit;
+import com.aprey.jira.plugin.openpoker.IssueServiceFacade;
 import com.aprey.jira.plugin.openpoker.PokerSession;
 import com.aprey.jira.plugin.openpoker.SessionStatus;
 import com.atlassian.activeobjects.external.ActiveObjects;
+import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import java.util.Arrays;
@@ -30,29 +33,39 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 @Transactional
 @Scanned
 @Named
+@Slf4j
 public class PersistenceService {
 
     @ComponentImport
     private final ActiveObjects ao;
     private final EntityToObjConverter converter;
     private final QueryBuilderService queryBuilder;
+    private final IssueServiceFacade issueServiceFacade;
+    private final EstimationDeckService deckService;
 
     @Inject
     public PersistenceService(ActiveObjects ao, EntityToObjConverter converter,
-                              QueryBuilderService queryBuilderService) {
+                              QueryBuilderService queryBuilderService,
+                              IssueServiceFacade issueServiceFacade,
+                              EstimationDeckService estimationDeckService) {
         this.ao = ao;
         this.converter = converter;
         this.queryBuilder = queryBuilderService;
+        this.issueServiceFacade = issueServiceFacade;
+        this.deckService = estimationDeckService;
     }
 
-    public void startSession(String issueId, long userId) {
+    public void startSession(String issueId, long userId, EstimationUnit estimationUnit) {
         if (getActiveSessionEntity(issueId).isPresent()) {
             return;
         }
@@ -60,7 +73,7 @@ public class PersistenceService {
         session.setIssueId(issueId);
         session.setModeratorId(userId);
         session.setSessionStatus(SessionStatus.IN_PROGRESS);
-        session.setUnitOfMeasure(EstimationUnit.FIBONACCI);
+        session.setUnitOfMeasure(estimationUnit);
 
         session.save();
     }
@@ -86,20 +99,64 @@ public class PersistenceService {
             return;
         }
         PokerSessionEntity session = sessionOpt.get();
+
+        if (session.getEstimates().length == 0) {
+            deleteSessions(issueId);
+            return;
+        }
+
         session.setSessionStatus(SessionStatus.FINISHED);
         session.setCompletionDate(System.currentTimeMillis());
 
         session.save();
     }
 
-    public void deleteSessions(String issueId) {
-        PokerSessionEntity[] sessions = ao.find(PokerSessionEntity.class,
-                                                queryBuilder.sessionWhereIssuerId(issueId));
-        if (sessions == null) {
+    public Optional<String> getFinaleEstimate(String issueId) {
+        return findFinalEstimateEntity(issueId).map(e -> Optional.ofNullable(e.getEstimateValue()))
+                                               .orElse(issueServiceFacade.getStoryPoints(issueId));
+    }
+
+    public void applyFinalEstimate(String issueId, int estimateId, ApplicationUser applicationUser) {
+        List<PokerSessionEntity> orderedSessions = getAllSessions(issueId);
+        if (orderedSessions.isEmpty()) {
+            log.error("No completed sessions for issue with id {}", issueId);
             return;
         }
 
-        Arrays.stream(sessions).forEach(this::deleteSessionAndEstimates);
+        PokerSessionEntity latestSession = orderedSessions.get(0);
+        EstimationGrade estimationGrade = getEstimationGrade(estimateId, latestSession.getUnitOfMeasure());
+
+        if (estimationGrade.isApplicable()) {
+            issueServiceFacade.applyEstimate(estimationGrade.getValue(), applicationUser, issueId);
+        }
+
+        saveFinalEstimate(estimationGrade.getValue(), issueId);
+        deleteSessions(orderedSessions);
+    }
+
+    private EstimationGrade getEstimationGrade(int estimationId, EstimationUnit estimationUnit) {
+        return deckService.getDeck(estimationUnit).getGrade(estimationId);
+    }
+
+    private void saveFinalEstimate(String estimate, String issueId) {
+        FinalEstEntity estimateEntity = getFinalEstimateEntity(issueId);
+        estimateEntity.setEstimateValue(estimate);
+        estimateEntity.setIssueId(issueId);
+
+        estimateEntity.save();
+    }
+
+    private Optional<FinalEstEntity> findFinalEstimateEntity(String issueId) {
+        FinalEstEntity[] estimates = ao.find(FinalEstEntity.class, queryBuilder.whereIssuerId(issueId));
+        if (estimates.length == 0) {
+            return Optional.empty();
+        }
+
+        return Optional.of(estimates[0]);
+    }
+
+    private FinalEstEntity getFinalEstimateEntity(String issueId) {
+        return findFinalEstimateEntity(issueId).orElse(ao.create(FinalEstEntity.class));
     }
 
     private void deleteSessionAndEstimates(PokerSessionEntity session) {
@@ -108,6 +165,20 @@ public class PersistenceService {
         }
 
         ao.delete(session);
+    }
+
+    public void deleteSessions(String issueId) {
+        PokerSessionEntity[] sessions = ao.find(PokerSessionEntity.class,
+                                                queryBuilder.whereIssuerId(issueId));
+        if (sessions == null) {
+            return;
+        }
+
+        deleteSessions(Arrays.stream(sessions).collect(Collectors.toList()));
+    }
+
+    private void deleteSessions(List<PokerSessionEntity> sessions) {
+        sessions.forEach(this::deleteSessionAndEstimates);
     }
 
     private Optional<EstimateEntity> findEstimate(final long estimatorId, final PokerSessionEntity session) {
@@ -121,8 +192,14 @@ public class PersistenceService {
     }
 
     private Optional<PokerSessionEntity> getActiveSessionEntity(String issueId) {
-        return findSessionByIssueIdAndStatus(issueId, SessionStatus.IN_PROGRESS,
-                                             sessionList -> Optional.of(sessionList.get(0)));
+        PokerSessionEntity[] sessions = ao.find(PokerSessionEntity.class,
+                                                queryBuilder.sessionWhereIssueIdAndStatus(issueId,
+                                                                                          SessionStatus.IN_PROGRESS));
+        if (sessions.length == 0) {
+            return Optional.empty();
+        }
+
+        return Optional.of(sessions[0]);
     }
 
     public Optional<PokerSession> getActiveSession(String issueId) {
@@ -131,18 +208,31 @@ public class PersistenceService {
 
     public Optional<PokerSession> getLatestCompletedSession(String issueId) {
         Function<List<PokerSessionEntity>, Optional<PokerSessionEntity>> theLatestSessionFinder = sessionList ->
-                sessionList.stream().sorted(Comparator.comparingLong(PokerSessionEntity::getCompletionDate).reversed())
-                           .limit(1)
-                           .findAny();
+                reverseOrderSessions(sessionList.stream())
+                        .limit(1)
+                        .findAny();
 
-        return findSessionByIssueIdAndStatus(issueId, SessionStatus.FINISHED, theLatestSessionFinder)
-                .map(converter::toObj);
+        return findSessionByIssueIdAndStatus(issueId, SessionStatus.FINISHED, theLatestSessionFinder).map(
+                converter::toObj);
+    }
+
+    private List<PokerSessionEntity> getAllSessions(String issueId) {
+        PokerSessionEntity[] sessions = ao.find(PokerSessionEntity.class,
+                                                queryBuilder.whereIssuerId(issueId));
+
+        return reverseOrderSessions(Arrays.stream(sessions)).collect(Collectors.toList());
+    }
+
+    private Stream<PokerSessionEntity> reverseOrderSessions(Stream<PokerSessionEntity> sessions) {
+        return sessions.sorted(Comparator.comparingLong(PokerSessionEntity::getCompletionDate).reversed());
     }
 
     private Optional<PokerSessionEntity> findSessionByIssueIdAndStatus(String issueId, SessionStatus status,
-                                                                       Function<List<PokerSessionEntity>, Optional<PokerSessionEntity>> sessionFinder) {
+                                                                       Function<List<PokerSessionEntity>,
+                                                                               Optional<PokerSessionEntity>> sessionFinder) {
         PokerSessionEntity[] sessions = ao.find(PokerSessionEntity.class,
                                                 queryBuilder.sessionWhereIssueIdAndStatus(issueId, status));
+
         if (sessions.length == 0) {
             return Optional.empty();
         }

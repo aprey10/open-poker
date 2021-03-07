@@ -40,8 +40,20 @@ function opSyncInit() {
 
 function opAUIInit() {
     $(".op-estimator-tooltip").tooltip();
-    $(".op-aui-select").auiSelect2();
     renderChart();
+    $(".open-poker-terminate-estimation-link").click(function () {
+        $(".open-poker-terminate-estimation-btn").click();
+    });
+    //This code is not needed all the time - should be refactored
+    $(".open-poker-re-estimate-btn").click(function () {
+        $(".open-poker-re-estimate-form").addClass("open-poker-hidden");
+        $(".open-poker-start-estimate-form").removeClass("open-poker-hidden");
+        $(".open-poker-start-estimation-cancel-btn").removeClass("open-poker-hidden");
+    });
+    $(".open-poker-start-estimation-cancel-btn").click(function () {
+        $(".open-poker-re-estimate-form").removeClass("open-poker-hidden");
+        $(".open-poker-start-estimate-form").addClass("open-poker-hidden");
+    });
 }
 
 function renderChart() {
@@ -161,6 +173,7 @@ function addEstimator(avatarUrl, displayName) {
     var outerSpan = $('<span />', {'class': 'aui-avatar aui-avatar-small estimator-avatar'}).append(span);
 
     $('#open-poker-js-estimators').append(outerSpan);
+    $(".op-estimator-tooltip").tooltip();
 }
 
 function getColor(index) {

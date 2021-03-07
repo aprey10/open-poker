@@ -19,6 +19,8 @@
 
 package com.aprey.jira.plugin.openpoker.api;
 
+import com.aprey.jira.plugin.openpoker.EstimationScale;
+import com.aprey.jira.plugin.openpoker.EstimationUnit;
 import com.aprey.jira.plugin.openpoker.persistence.PersistenceService;
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,7 +29,10 @@ public class StartSessionProcessor implements ActionProcessor {
     @Override
     public void process(PersistenceService persistenceService, HttpServletRequest request, String issueId) {
         final long userId = Long.parseLong(request.getParameter("userId"));
+        final String estimationScale = request.getParameter("estimationScale");
+        EstimationUnit estimationUnit = EstimationScale.findByName(estimationScale)
+                                                       .orElse(EstimationUnit.CLASSIC_PLANNING);
 
-        persistenceService.startSession(issueId, userId);
+        persistenceService.startSession(issueId, userId, estimationUnit);
     }
 }

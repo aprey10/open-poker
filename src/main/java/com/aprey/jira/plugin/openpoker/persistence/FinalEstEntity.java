@@ -17,21 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.aprey.jira.plugin.openpoker;
+package com.aprey.jira.plugin.openpoker.persistence;
 
-import com.atlassian.jira.user.ApplicationUser;
-import java.util.List;
-import lombok.Builder;
-import lombok.Value;
+import net.java.ao.Entity;
+import net.java.ao.schema.Index;
+import net.java.ao.schema.Indexes;
 
-@Builder
-@Value
-public class PokerSession {
-    private final ApplicationUser moderator;
-    private final String issueId;
-    private final SessionStatus status;
-    private final long completionDate;
-    private final List<EstimationGrade> estimationGrades;
-    private final List<Estimate> estimates;
-    private final EstimationUnit estimationUnit;
+@Indexes(@Index(name = "issueId", methodNames = {"getIssueId"}))
+public interface FinalEstEntity extends Entity {
+
+    String getIssueId();
+
+    void setIssueId(String issueId);
+
+    String getEstimateValue();
+
+    void setEstimateValue(String estimate);
 }

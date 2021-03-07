@@ -17,21 +17,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.aprey.jira.plugin.openpoker;
+package com.aprey.jira.plugin.openpoker.api;
 
-import com.atlassian.jira.user.ApplicationUser;
+import com.aprey.jira.plugin.openpoker.EstimationGrade;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import lombok.Builder;
 import lombok.Value;
 
-@Builder
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+
 @Value
-public class PokerSession {
-    private final ApplicationUser moderator;
-    private final String issueId;
-    private final SessionStatus status;
-    private final long completionDate;
+@Builder
+public class EstimationViewDTO {
+    private final List<EstimateDTO> estimates;
     private final List<EstimationGrade> estimationGrades;
-    private final List<Estimate> estimates;
-    private final EstimationUnit estimationUnit;
+    private final boolean alreadyVoted;
+    private final boolean applicableGrades;
+
+    public int getAverageEstimateId() {
+        return estimates.stream().map(EstimateDTO::getGradeId)
+                        .collect(groupingBy(Function.identity(), counting()))
+                        .entrySet()
+                        .stream()
+                        .max(Map.Entry.comparingByValue())
+                        .map(Map.Entry::getKey).orElse(1);
+    }
 }

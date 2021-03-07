@@ -17,21 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.aprey.jira.plugin.openpoker;
+package com.aprey.jira.plugin.openpoker.persistence;
 
-import com.atlassian.jira.user.ApplicationUser;
+import com.aprey.jira.plugin.openpoker.EstimationGrade;
+import com.aprey.jira.plugin.openpoker.Deck;
 import java.util.List;
-import lombok.Builder;
-import lombok.Value;
 
-@Builder
-@Value
-public class PokerSession {
-    private final ApplicationUser moderator;
-    private final String issueId;
-    private final SessionStatus status;
-    private final long completionDate;
-    private final List<EstimationGrade> estimationGrades;
-    private final List<Estimate> estimates;
-    private final EstimationUnit estimationUnit;
+public class ClassicPlanningDeck implements Deck {
+
+    @Override
+    public List<EstimationGrade> getGrades() {
+        return ClassicPlanning.getValuesList();
+    }
+
+    @Override
+    public EstimationGrade getGrade(int gradeId) {
+        return ClassicPlanning.findById(gradeId);
+    }
 }

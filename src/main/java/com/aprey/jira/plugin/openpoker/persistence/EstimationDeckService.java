@@ -19,24 +19,24 @@
 
 package com.aprey.jira.plugin.openpoker.persistence;
 
-import com.aprey.jira.plugin.openpoker.SessionStatus;
+import com.aprey.jira.plugin.openpoker.Deck;
+import com.aprey.jira.plugin.openpoker.EstimationUnit;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
+import com.google.common.collect.ImmutableMap;
 import javax.inject.Named;
-import net.java.ao.Query;
 
 @Scanned
 @Named
-public class QueryBuilderService {
+public class EstimationDeckService {
+    private final ImmutableMap<EstimationUnit, Deck> unitToDeckMap
+            = ImmutableMap.<EstimationUnit, Deck>builder()
+            .put(EstimationUnit.FIBONACCI, new FibonacciDeck())
+            .put(EstimationUnit.CLASSIC_PLANNING, new ClassicPlanningDeck())
+            .put(EstimationUnit.T_SHIRT_SIZE, new TshirtSizeDeck())
+            .put(EstimationUnit.LINEAR, new LinearDeck())
+            .build();
 
-    Query sessionWhereIssueIdAndStatus(String issueId, SessionStatus status) {
-        return Query.select().where("ISSUE_ID = ? AND SESSION_STATUS = ?", issueId, status);
-    }
-
-    Query estimateWhereEstimatorIdAndSessionId(Long estimatorId, PokerSessionEntity session) {
-        return Query.select().where("POKER_SESSION_ID = ? AND ESTIMATOR_ID = ?", session, estimatorId);
-    }
-
-    Query whereIssuerId(String issueId) {
-        return Query.select().where("ISSUE_ID = ?", issueId);
+    public Deck getDeck(EstimationUnit estimationUnit) {
+        return unitToDeckMap.get(estimationUnit);
     }
 }

@@ -20,7 +20,7 @@
 package com.aprey.jira.plugin.openpoker.persistence;
 
 import com.aprey.jira.plugin.openpoker.Estimate;
-import com.aprey.jira.plugin.openpoker.FibonacciNumber;
+import com.aprey.jira.plugin.openpoker.EstimationUnit;
 import com.aprey.jira.plugin.openpoker.PokerSession;
 import com.aprey.jira.plugin.openpoker.UserNotFoundException;
 import com.atlassian.jira.user.ApplicationUser;
@@ -39,16 +39,19 @@ class EntityToObjConverter {
 
     @ComponentImport
     private final UserManager userManager;
+    private final EstimationDeckService estimationDeckService;
 
     @Inject
-    public EntityToObjConverter(UserManager userManager) {
+    public EntityToObjConverter(UserManager userManager, EstimationDeckService estimationDeckService) {
         this.userManager = userManager;
+        this.estimationDeckService = estimationDeckService;
     }
 
-    public Estimate toObj(EstimateEntity entity) {
+    public Estimate toObj(EstimateEntity entity, EstimationUnit estimationUnit) {
         return Estimate.builder()
                        .estimator(getUser(entity.getEstimatorId()))
-                       .grade(FibonacciNumber.findById(entity.getGradeId()).getValue())
+                       .grade(estimationDeckService.getDeck(estimationUnit).getGrade(entity.getGradeId()).getValue())
+                       .gradeId(entity.getGradeId())
                        .build();
     }
 
@@ -58,12 +61,14 @@ class EntityToObjConverter {
                            .issueId(entity.getIssueId())
                            .moderator(getUser(entity.getModeratorId()))
                            .completionDate(entity.getCompletionDate())
-                           .estimates(buildEstimates(entity.getEstimates()))
+                           .estimates(buildEstimates(entity.getEstimates(), entity.getUnitOfMeasure()))
+                           .estimationGrades(estimationDeckService.getDeck(entity.getUnitOfMeasure()).getGrades())
+                           .estimationUnit(entity.getUnitOfMeasure())
                            .build();
     }
 
-    private List<Estimate> buildEstimates(EstimateEntity[] entities) {
-        return Arrays.stream(entities).map(this::toObj).collect(Collectors.toList());
+    private List<Estimate> buildEstimates(EstimateEntity[] entities, EstimationUnit estimationUnit) {
+        return Arrays.stream(entities).map(e -> toObj(e, estimationUnit)).collect(Collectors.toList());
     }
 
     private ApplicationUser getUser(long userId) {

@@ -20,11 +20,13 @@
 package com.aprey.jira.plugin.openpoker.persistence;
 
 import com.aprey.jira.plugin.openpoker.EstimationUnit;
+import com.aprey.jira.plugin.openpoker.IssueServiceFacade;
 import com.aprey.jira.plugin.openpoker.PokerSession;
 import com.aprey.jira.plugin.openpoker.SessionStatus;
 import com.atlassian.activeobjects.external.ActiveObjects;
 import java.util.Optional;
 import net.java.ao.Query;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -48,12 +50,15 @@ public class PersistenceServiceTest {
     private final PokerSessionEntity sessionEntity = mock(PokerSessionEntity.class);
     private final EstimateEntity estimateEntity = mock(EstimateEntity.class);
     private final ActiveObjects ao = mock(ActiveObjects.class);
+    private final IssueServiceFacade issueServiceFacade = mock(IssueServiceFacade.class);
     private final QueryBuilderService queryBuilder = mock(QueryBuilderService.class);
     private final Query sessionQuery = mock(Query.class);
     private final Query estimateQuery = mock(Query.class);
     private final EntityToObjConverter converter = mock(EntityToObjConverter.class);
+    private final EstimationDeckService deckService = mock(EstimationDeckService.class);
 
-    private final PersistenceService service = new PersistenceService(ao, converter, queryBuilder);
+    private final PersistenceService service = new PersistenceService(ao, converter, queryBuilder, issueServiceFacade,
+                                                                      deckService);
 
     @Test
     public void sessionIsStarted() {
@@ -61,7 +66,7 @@ public class PersistenceServiceTest {
         when(ao.find(eq(PokerSessionEntity.class), eq(sessionQuery))).thenReturn(new PokerSessionEntity[]{});
         when(ao.create(eq(PokerSessionEntity.class))).thenReturn(sessionEntity);
 
-        service.startSession(ISSUE_ID, USER_ID);
+        service.startSession(ISSUE_ID, USER_ID, EstimationUnit.FIBONACCI);
 
         verify(sessionEntity, times(1)).setIssueId(eq(ISSUE_ID));
         verify(sessionEntity, times(1)).setModeratorId(eq(USER_ID));
@@ -76,7 +81,7 @@ public class PersistenceServiceTest {
         when(ao.find(eq(PokerSessionEntity.class), eq(sessionQuery))).thenReturn(
                 new PokerSessionEntity[]{sessionEntity});
 
-        service.startSession(ISSUE_ID, USER_ID);
+        service.startSession(ISSUE_ID, USER_ID, EstimationUnit.FIBONACCI);
 
         verifyZeroInteractions(sessionEntity);
         verify(ao, times(0)).create(eq(PokerSessionEntity.class));
@@ -121,12 +126,48 @@ public class PersistenceServiceTest {
         when(queryBuilder.sessionWhereIssueIdAndStatus(ISSUE_ID, SessionStatus.IN_PROGRESS)).thenReturn(sessionQuery);
         when(ao.find(eq(PokerSessionEntity.class), eq(sessionQuery))).thenReturn(
                 new PokerSessionEntity[]{sessionEntity});
+        when(sessionEntity.getEstimates()).thenReturn(new EstimateEntity[]{estimateEntity});
 
         service.stopSession(ISSUE_ID);
 
         verify(sessionEntity, times(1)).setSessionStatus(SessionStatus.FINISHED);
         verify(sessionEntity, times(1)).setCompletionDate(anyLong());
         verify(sessionEntity, times(1)).save();
+    }
+
+    @Test
+    public void sessionIsStoppedAndDeleted() {
+        when(queryBuilder.sessionWhereIssueIdAndStatus(ISSUE_ID, SessionStatus.IN_PROGRESS)).thenReturn(sessionQuery);
+        when(ao.find(PokerSessionEntity.class, sessionQuery)).thenReturn(new PokerSessionEntity[]{sessionEntity});
+        when(sessionEntity.getEstimates()).thenReturn(new EstimateEntity[]{});
+
+        final Query allSessionsQuery = mock(Query.class);
+        when(queryBuilder.whereIssuerId(ISSUE_ID)).thenReturn(allSessionsQuery);
+        when(ao.find(PokerSessionEntity.class, allSessionsQuery)).thenReturn(new PokerSessionEntity[]{sessionEntity});
+
+        service.stopSession(ISSUE_ID);
+
+        verify(ao, times(1)).delete(sessionEntity);
+        verify(sessionEntity, times(0)).setSessionStatus(SessionStatus.FINISHED);
+        verify(sessionEntity, times(0)).setCompletionDate(anyLong());
+        verify(sessionEntity, times(0)).save();
+    }
+
+    @Test
+    public void allSessionsAreWithEstimatesDeleted() {
+        final Query allSessionsQuery = mock(Query.class);
+        final PokerSessionEntity sessionEntity2 = mock(PokerSessionEntity.class);
+
+        when(sessionEntity2.getEstimates()).thenReturn(new EstimateEntity[]{estimateEntity});
+        when(queryBuilder.whereIssuerId(ISSUE_ID)).thenReturn(allSessionsQuery);
+        when(ao.find(PokerSessionEntity.class, allSessionsQuery)).thenReturn(
+                new PokerSessionEntity[]{sessionEntity, sessionEntity2});
+
+        service.deleteSessions(ISSUE_ID);
+
+        verify(ao, times(1)).delete(sessionEntity);
+        verify(ao, times(1)).delete(sessionEntity2);
+        verify(ao, times(1)).delete(estimateEntity);
     }
 
     @Test

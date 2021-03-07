@@ -22,5 +22,26 @@
 }
 
 .estimator-avatar {
-    margin-right : 4px;
+    margin-right: 4px;
+}
+
+.open-poker-terminate-estimation-link {
+    display: block;
+    font-size: 13px;
+}
+
+.open-poker-btn-group {
+    margin-top: 15px;
+}
+
+.open-poker-btn-group > input {
+    margin-right: 5px;
+}
+
+.open-poker-hidden {
+    display: none;
+}
+
+.open-poker-start-estimation-cancel-btn {
+    margin-left: 5px;
 }

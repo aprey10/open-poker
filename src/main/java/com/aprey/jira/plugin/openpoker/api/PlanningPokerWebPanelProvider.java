@@ -20,7 +20,7 @@
 package com.aprey.jira.plugin.openpoker.api;
 
 import com.aprey.jira.plugin.openpoker.Estimate;
-import com.aprey.jira.plugin.openpoker.FibonacciNumber;
+import com.aprey.jira.plugin.openpoker.EstimationScale;
 import com.aprey.jira.plugin.openpoker.PokerSession;
 import com.aprey.jira.plugin.openpoker.persistence.PersistenceService;
 import com.atlassian.jira.issue.Issue;
@@ -32,14 +32,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Scanned
 public class PlanningPokerWebPanelProvider extends AbstractJiraContextProvider {
 
-    private static final Logger log = Logger.getLogger(PlanningPokerWebPanelProvider.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(PlanningPokerWebPanelProvider.class);
+
     private static final String ISSUE_ID_KEY = "issue";
 
     private final PersistenceService sessionService;
@@ -61,11 +63,25 @@ public class PlanningPokerWebPanelProvider extends AbstractJiraContextProvider {
         contextMap.put("contextPath", jiraHelper.getRequest().getContextPath());
         contextMap.put("issueId", issueId);
         contextMap.put("userId", applicationUser.getId());
-
+        contextMap.put("estimationUnits", EstimationScale.getValues());
+        sessionService.getFinaleEstimate(issueId).ifPresent(v -> contextMap.put("currentEstimate", v));
         return contextMap;
     }
 
     private void buildSessionView(PokerSession session, Map<String, Object> contextMap, ApplicationUser currentUser) {
+        SessionViewDTO viewDTO = SessionViewDTO.builder()
+                                               .session(session)
+                                               .estimation(buildEstimationView(session, currentUser))
+                                               .currentScale(EstimationScale.findByUnit(session.getEstimationUnit())
+                                                                            .orElse(EstimationScale.CLASSIC_PLANNING))
+                                               .moderator(
+                                                       userConverter.buildUserDto(session.getModerator(), currentUser))
+                                               .build();
+
+        contextMap.put("viewDTO", viewDTO);
+    }
+
+    private EstimationViewDTO buildEstimationView(PokerSession session, ApplicationUser currentUser) {
         boolean alreadyVoted = (session.getEstimates()
                                        .stream()
                                        .anyMatch(e -> e.getEstimator().equals(currentUser)));
@@ -75,21 +91,17 @@ public class PlanningPokerWebPanelProvider extends AbstractJiraContextProvider {
                                              .map(e -> toEstimateDto(currentUser, e))
                                              .collect(Collectors.toList());
 
-        SessionViewDTO viewDTO = SessionViewDTO.builder()
-                                               .session(session)
-                                               .alreadyVoted(alreadyVoted)
-                                               .estimationGrades(FibonacciNumber.getValuesList())
-                                               .estimates(estimates)
-                                               .moderator(
-                                                       userConverter.buildUserDto(session.getModerator(), currentUser))
-                                               .build();
-
-        contextMap.put("viewDTO", viewDTO);
+        return EstimationViewDTO.builder()
+                                .alreadyVoted(alreadyVoted)
+                                .estimationGrades(session.getEstimationGrades())
+                                .estimates(estimates)
+                                .build();
     }
 
     private EstimateDTO toEstimateDto(ApplicationUser currentUser, Estimate estimate) {
         return EstimateDTO.builder()
                           .grade(estimate.getGrade())
+                          .gradeId(estimate.getGradeId())
                           .estimator(userConverter.buildUserDto(estimate.getEstimator(), currentUser))
                           .build();
     }

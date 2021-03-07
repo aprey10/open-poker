@@ -9,15 +9,27 @@
 
 ### Actions description
 
-**Start Estimation** - starts new estimation session for the current jira issue. The jira issue can have only one estimation session in progress.
+**Start Estimation** - starts a new estimation session for the current jira issue. The jira issue can have only one estimation session in progress.
 
-**Vote** - Submit an estimate. One user can submit only once.
+**Vote** - submit an estimate. The user can estimate only once during the session.
 
-**Stop Estimation** - stops active estimation. Only the user which started estimation can stop it.
+**Stop Estimation** - stops active estimation. Only the user that started estimation can stop it.
 
-**Re-estimate** - starts new estimation session.
+**Re-estimate** - starts a new estimation session.
 
-**Delete** - deletes all estimation sessions and estimates related to the current jira issue.
+**Apply** - applies final estimate and populates 'Story Points' field (if it's present and final estimate is numeric)
+
+**Terminate estimation** - terminates estimation session.
+
+### Supported estimation scales
+
+**Planning Cards** - Classic planning poker sequence: 0, 1, 2, 3, 5, 8, 13, 20, 40, 100, ?, Coffee, Infinite.
+
+**Fibonacci** - Fibonacci sequence: 1, 2, 3, 5, 8, 13, 21, ?, Coffee, Infinite.
+
+**Linear** - Increments in a fixed value (1): 1, 2, 3,... 12
+
+**T-shirt size** - XS, S, M, L, XL, XXL, XXXL
 
 
 ### Data security and privacy statement

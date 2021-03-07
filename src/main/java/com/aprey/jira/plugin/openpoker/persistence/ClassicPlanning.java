@@ -17,8 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.aprey.jira.plugin.openpoker;
+package com.aprey.jira.plugin.openpoker.persistence;
 
+import com.aprey.jira.plugin.openpoker.EstimationGrade;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -27,30 +28,35 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-public enum FibonacciNumber implements EstimationGrade {
-    ONE(1, "1"),
-    TWO(2, "2"),
-    THREE(3, "3"),
-    FIVE(4, "5"),
-    EIGHT(5, "8"),
-    THIRTEEN(6, "13"),
-    TWENTY_ONE(7, "21"),
-    INFINITE(8, "Infinite"),
-    COFFEE(9, "Coffee"),
-    QUESTION(10, "?");
+public enum ClassicPlanning implements EstimationGrade {
+    ZERO(1, "0", true),
+    ONE(2, "1", true),
+    TWO(3, "2", true),
+    THREE(4, "3", true),
+    FIVE(5, "5", true),
+    EIGHT(6, "8", true),
+    THIRTEEN(7, "13", true),
+    TWENTY(8, "20", true),
+    FORTY(9, "40", true),
+    HUNDRED(10, "100", true),
+    INFINITE(11, "Infinite", false),
+    COFFEE(12, "Coffee", false),
+    QUESTION(13, "?", false);
 
     private final int id;
     private final String value;
+    private final boolean applicable;
 
-    private static final Map<Integer, FibonacciNumber> ID_TO_INSTANCE_MAP = Stream.of(FibonacciNumber.values())
+    private static final Map<Integer, ClassicPlanning> ID_TO_INSTANCE_MAP = Stream.of(ClassicPlanning.values())
                                                                                   .collect(toMap(
-                                                                                          FibonacciNumber::getId,
+                                                                                          ClassicPlanning::getId,
                                                                                           Function.identity())
-                                                                                           );
+                                                                                          );
 
-    FibonacciNumber(int id, String value) {
+    ClassicPlanning(int id, String value, boolean applicable) {
         this.id = id;
         this.value = value;
+        this.applicable = applicable;
     }
 
     @Override
@@ -63,11 +69,16 @@ public enum FibonacciNumber implements EstimationGrade {
         return value;
     }
 
+    @Override
+    public boolean isApplicable() {
+        return applicable;
+    }
+
     public static EstimationGrade findById(int id) {
         return ID_TO_INSTANCE_MAP.get(id);
     }
 
     public static List<EstimationGrade> getValuesList() {
-        return Stream.of(FibonacciNumber.values()).collect(toList());
+        return Stream.of(ClassicPlanning.values()).collect(toList());
     }
 }

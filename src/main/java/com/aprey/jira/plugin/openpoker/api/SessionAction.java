@@ -27,7 +27,8 @@ public enum SessionAction {
     VOTE("Vote"),
     STOP_SESSION("Stop Estimation"),
     RE_ESTIMATE("Re-estimate"),
-    DELETE("Delete");
+    APPLY_ESTIMATE("Apply"),
+    CANCEL("Terminate");
 
     private final String actionName;
 

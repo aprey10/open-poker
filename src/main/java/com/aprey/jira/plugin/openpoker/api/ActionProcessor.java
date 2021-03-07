@@ -38,5 +38,6 @@ public interface ActionProcessor {
         }
     }
 
+    //TODO: persistanceService should be injected to prcossors instead of passing as parameter
     void process(PersistenceService persistenceService, HttpServletRequest request, String issueId);
 }
