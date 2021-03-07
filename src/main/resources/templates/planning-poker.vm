@@ -149,7 +149,6 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
             <p>
                 <input name="issueId" value="$issueId" type="hidden"/>
                 <input name="userId" value="$userId" type="hidden"/>
-                <span>$viewDTO.getCurrentScale().getName()</span>
                 <input name="estimationScale" value="$viewDTO.getCurrentScale().getName()" type="hidden">
                 <input name="action" type="submit" value="Apply" class="aui-button"/>
                 <input name="action" type="submit" value="Re-estimate" class="aui-button"/>
