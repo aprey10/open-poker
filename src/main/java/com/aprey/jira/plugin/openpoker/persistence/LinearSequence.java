@@ -31,16 +31,16 @@ import static java.util.stream.Collectors.toMap;
 public enum LinearSequence implements EstimationGrade {
     ONE(1, "1", true),
     TWO(2, "2", true),
-    THREE(3, "4", true),
-    FOUR(4, "5", true),
-    FIVE(5, "6", true),
-    SIX(6, "7", true),
-    EIGHT(7, "8", true),
-    NINE(8, "9", true),
-    TEN(9, "10", true),
-    ELEVEN(10, "11", true),
-    TWELFTH(11, "12", true),
-    THIRTEEN(12, "13", true);
+    THREE(3, "3", true),
+    FOUR(4, "4", true),
+    FIVE(5, "5", true),
+    SIX(6, "6", true),
+    EIGHT(7, "7", true),
+    NINE(8, "8", true),
+    TEN(9, "9", true),
+    ELEVEN(10, "10", true),
+    TWELFTH(11, "11", true),
+    THIRTEEN(12, "12", true);
 
     private final int id;
     private final String value;
