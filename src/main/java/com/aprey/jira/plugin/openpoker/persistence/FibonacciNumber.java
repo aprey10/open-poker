@@ -29,7 +29,6 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 public enum FibonacciNumber implements EstimationGrade {
-    ZERO(11, "0", true),
     ONE(1, "1", true),
     TWO(2, "2", true),
     THREE(3, "3", true),
@@ -37,9 +36,6 @@ public enum FibonacciNumber implements EstimationGrade {
     EIGHT(5, "8", true),
     THIRTEEN(6, "13", true),
     TWENTY_ONE(7, "21", true),
-    THIRTY_FOUR(12, "34", true),
-    FIFTY_FIVE(13, "55", true),
-    EIGHTY_NINE(14, "89", true),
     INFINITE(8, "Infinite", false),
     COFFEE(9, "Coffee", false),
     QUESTION(10, "?", false);

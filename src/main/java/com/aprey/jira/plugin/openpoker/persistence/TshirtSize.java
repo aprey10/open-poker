@@ -35,10 +35,7 @@ public enum TshirtSize implements EstimationGrade {
     L(4, "L", false),
     XL(5, "XL", false),
     XXL(6, "XXL", false),
-    XXXL(7, "XXXL", false),
-    INFINITE(8, "Infinite", false),
-    COFFEE(9, "Coffee", false),
-    QUESTION(10, "?", false);
+    XXXL(7, "XXXL", false);
 
     private final int id;
     private final String value;

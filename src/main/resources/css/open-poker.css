@@ -37,3 +37,11 @@
 .open-poker-btn-group > input {
     margin-right: 5px;
 }
+
+.open-poker-hidden {
+    display: none;
+}
+
+.open-poker-start-estimation-cancel-btn {
+    margin-left: 5px;
+}

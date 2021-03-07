@@ -44,9 +44,11 @@ public enum LinearSequence implements EstimationGrade {
     THIRTEEN(13, "13", true),
     FOURTEEN(14, "14", true),
     FIFTEEN(15, "15", true),
-    INFINITE(16, "Infinite", false),
-    COFFEE(17, "Coffee", false),
-    QUESTION(18, "?", false);
+    SIXTEEN(16, "16", false),
+    SEVENTEEN(17, "17", false),
+    EIGHTEEN(18, "18", false),
+    NINETEEN(19, "19", false),
+    TWENTY(20, "20", false);
 
     private final int id;
     private final String value;

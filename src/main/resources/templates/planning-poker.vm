@@ -1,8 +1,8 @@
 $webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
-$webResourceManager.requireResource("com.atlassian.auiplugin:aui-select2")
 $webResourceManager.requireResource("com.atlassian.auiplugin:aui-tooltips")
 $webResourceManager.requireResource("com.atlassian.auiplugin:aui-badge")
 $webResourceManager.requireResource("com.atlassian.auiplugin:aui-buttons")
+$webResourceManager.requireResource("com.atlassian.auiplugin:aui-forms")
 $webResourceManager.requireResource("com.atlassian.auiplugin:aui-experimental-iconfont")
 $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:open-poker-resources")
 
@@ -61,16 +61,6 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
                 </dd>
             </dl>
         </li>
-        #if($currentEstimate && !$viewDTO.getEstimation().isAlreadyVoted())
-            <li class="people-details">
-                <dl>
-                    <dt>Current Estimate:</dt>
-                    <dd>
-                        <aui-badge class="aui-badge-primary">$currentEstimate</aui-badge>
-                    </dd>
-                </dl>
-            </li>
-        #end
     </ul>
 
     <form action="$contextPath/plugins/servlet/open-poker/session" method="post" class="aui left-aligned-form"
@@ -79,10 +69,8 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
         <input name="userId" value="$userId" type="hidden"/>
         #if(!$viewDTO.getEstimation().isAlreadyVoted())
             <div class="field-group">
-                <label for="estimationInfo">Your Estimate:</label>
-                <select name="estimationGradeId" placeholder="Choose Estimate" style="max-width: 160px"
-                        no-empty-values="false" class="op-aui-select">
-                    <option class="imagebacked" value="">Choose estimate</option>
+                <label for="estimationGradeId">Your Estimate:</label>
+                <select name="estimationGradeId" class="select" style="max-width: 100px">
                     #foreach($grade in $viewDTO.getEstimation().getEstimationGrades())
                         <option class="imagebacked" value="$grade.getId()">$grade.getValue()</option>
                     #end
@@ -133,9 +121,8 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
     <form action="$contextPath/plugins/servlet/open-poker/session" method="post" class="aui left-aligned-form">
 
         <div class="field-group">
-            <label for="estimationInfo">Final Estimate:</label>
-            <select name="finalEstimateId" placeholder="Resulting Estimate" style="max-width: 100px"
-                    no-empty-values="false" class="op-aui-select">
+            <label for="finalEstimateId">Final Estimate:</label>
+            <select name="finalEstimateId" class="select" placeholder="Resulting Estimate" style="max-width: 100px">
                 #foreach($grade in $viewDTO.getEstimation().getEstimationGrades())
                     #if($grade.getId() == $viewDTO.getEstimation().getAverageEstimateId())
                         <option class="imagebacked" value="$grade.getId()" selected>$grade.getValue()</option>
@@ -159,24 +146,34 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
 #else
 <div>
     <p>
-    <form action="$contextPath/plugins/servlet/open-poker/session" method="post" class="aui left-aligned-form"
+
+        ##    Should be displayed only in case Start Estimation form is hidden
+    <div class="aui left-aligned-form open-poker-re-estimate-form #if(!$currentEstimate)open-poker-hidden#end"
+         style="margin-top: 0px">
+
+        <ul class="item-details">
+            <li class="people-details">
+                <dl>
+                    <dt>Current Estimate:</dt>
+                    <dd>
+                        <aui-badge class="aui-badge-primary">$currentEstimate</aui-badge>
+                    </dd>
+                </dl>
+            </li>
+        </ul>
+        <div style="margin-top: 10px">
+            <input name="action" type="submit" value="Re-estimate" class="aui-button open-poker-re-estimate-btn"/>
+        </div>
+    </div>
+
+    ##    Should be displayed only in case Re-estimate form is hidden
+    <form action="$contextPath/plugins/servlet/open-poker/session" method="post"
+          class="aui left-aligned-form open-poker-start-estimate-form #if($currentEstimate)open-poker-hidden#end"
           style="margin-top: 0px">
-        #if($currentEstimate)
-            <ul class="item-details">
-                <li class="people-details">
-                    <dl>
-                        <dt>Current Estimate:</dt>
-                        <dd>
-                            <aui-badge class="aui-badge-primary">$currentEstimate</aui-badge>
-                        </dd>
-                    </dl>
-                </li>
-            </ul>
-        #end
-        <div class="field-group">
+
+        <div class="field-group open-poker-estimation-scale">
             <label for="estimationInfo">Estimation Scale:</label>
-            <select name="estimationScale" placeholder="Choose Scale" style="max-width: 150px"
-                    no-empty-values="false" class="op-aui-select">
+            <select class="select" name="estimationScale" style="max-width: 150px;">
                 #foreach($unit in $estimationUnits)
                     <option class="imagebacked" value="$unit.getName()">$unit.getName()</option>
                 #end
@@ -186,13 +183,11 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
         <div style="margin-top: 10px">
             <input name="issueId" value="$issueId" type="hidden"/>
             <input name="userId" value="$userId" type="hidden"/>
-            #if($currentEstimate)
-                <input name="action" type="submit" value="Re-estimate" class="aui-button"/>
-            #else
-                <input name="action" type="submit" value="Start Estimation" class="aui-button"/>
-            #end
+            <input name="action" type="submit" value="Start Estimation" class="aui-button"/>
+            <a class="open-poker-start-estimation-cancel-btn open-poker-hidden" href="#">Cancel</a>
         </div>
     </form>
+
     </p>
 </div>
 #end
