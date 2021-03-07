@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 public enum SessionAction {
     START_SESSION("Start Estimation"),
-    VOTE("Estimate"),
+    VOTE("Vote"),
     STOP_SESSION("Stop Estimation"),
     RE_ESTIMATE("Re-estimate"),
     APPLY_ESTIMATE("Apply"),

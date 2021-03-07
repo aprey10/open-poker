@@ -80,7 +80,7 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
 
         <div class="open-poker-btn-group aui-buttons">
             #if(!$viewDTO.getEstimation().isAlreadyVoted())
-                <input name="action" type="submit" value="Estimate" class="aui-button aui-button-split-main"/>
+                <input name="action" type="submit" value="Vote" class="aui-button aui-button-split-main"/>
             #end
             #if($userId == $viewDTO.getSession().getModerator().getId())
                 <input name="action" type="submit" value="Stop Estimation" class="aui-button"/>

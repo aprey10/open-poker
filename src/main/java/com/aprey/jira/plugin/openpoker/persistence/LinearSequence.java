@@ -29,26 +29,18 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 public enum LinearSequence implements EstimationGrade {
-    ZERO(1, "0", true),
-    ONE(2, "1", true),
-    TWO(3, "2", true),
-    THREE(4, "4", true),
-    FOUR(5, "5", true),
-    FIVE(6, "6", true),
-    SIX(7, "7", true),
-    EIGHT(8, "8", true),
-    NINE(9, "9", true),
-    TEN(10, "10", true),
-    ELEVEN(11, "11", true),
-    TWELFTH(12, "12", true),
-    THIRTEEN(13, "13", true),
-    FOURTEEN(14, "14", true),
-    FIFTEEN(15, "15", true),
-    SIXTEEN(16, "16", false),
-    SEVENTEEN(17, "17", false),
-    EIGHTEEN(18, "18", false),
-    NINETEEN(19, "19", false),
-    TWENTY(20, "20", false);
+    ONE(1, "1", true),
+    TWO(2, "2", true),
+    THREE(3, "4", true),
+    FOUR(4, "5", true),
+    FIVE(5, "6", true),
+    SIX(6, "7", true),
+    EIGHT(7, "8", true),
+    NINE(8, "9", true),
+    TEN(9, "10", true),
+    ELEVEN(10, "11", true),
+    TWELFTH(11, "12", true),
+    THIRTEEN(12, "13", true);
 
     private final int id;
     private final String value;
