@@ -2,6 +2,8 @@ $webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
 $webResourceManager.requireResource("com.atlassian.auiplugin:aui-select2")
 $webResourceManager.requireResource("com.atlassian.auiplugin:aui-tooltips")
 $webResourceManager.requireResource("com.atlassian.auiplugin:aui-badge")
+$webResourceManager.requireResource("com.atlassian.auiplugin:aui-buttons")
+$webResourceManager.requireResource("com.atlassian.auiplugin:aui-experimental-iconfont")
 $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:open-poker-resources")
 
 <input type="hidden" id="open-poker-js-issueId" value="$issueId"/>
@@ -11,7 +13,7 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
 
 #if($viewDTO)
     #if($viewDTO.getSession().getStatus() == "IN_PROGRESS")
-    <ul class="item-details">
+    <ul class="item-details open-poker-table">
         <li class="people-details">
             <dl>
                 <dt>Initiated by:</dt>
@@ -24,6 +26,17 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
             $viewDTO.getModerator().getDisplayName()
         </span>
                     </span>
+                    <span class="open-poker-terminate-estimation-link">
+                            <a>Terminate estimation</a>
+                    </span>
+                </dd>
+            </dl>
+        </li>
+        <li class="people-details">
+            <dl>
+                <dt>Status:</dt>
+                <dd>
+                    $viewDTO.getSession().getStatus().getName()
                 </dd>
             </dl>
         </li>
@@ -48,14 +61,6 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
                 </dd>
             </dl>
         </li>
-        <li class="people-details">
-            <dl>
-                <dt>Status:</dt>
-                <dd>
-                    $viewDTO.getSession().getStatus().getName()
-                </dd>
-            </dl>
-        </li>
         #if($currentEstimate && !$viewDTO.getEstimation().isAlreadyVoted())
             <li class="people-details">
                 <dl>
@@ -75,7 +80,7 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
         #if(!$viewDTO.getEstimation().isAlreadyVoted())
             <div class="field-group">
                 <label for="estimationInfo">Your Estimate:</label>
-                <select name="estimationGradeId" placeholder="Choose Estimate" style="max-width: 170px"
+                <select name="estimationGradeId" placeholder="Choose Estimate" style="max-width: 160px"
                         no-empty-values="false" class="op-aui-select">
                     <option class="imagebacked" value="">Choose estimate</option>
                     #foreach($grade in $viewDTO.getEstimation().getEstimationGrades())
@@ -84,15 +89,18 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
                 </select>
             </div>
         #end
-        <p>
+
+        <div class="open-poker-btn-group aui-buttons">
             #if(!$viewDTO.getEstimation().isAlreadyVoted())
-                <input name="action" type="submit" value="Vote" class="aui-button aui-button-primary"
-                       style="margin-top: 5px"/>
+                <input name="action" type="submit" value="Estimate" class="aui-button aui-button-split-main"/>
             #end
             #if($userId == $viewDTO.getSession().getModerator().getId())
-                <input name="action" type="submit" value="Stop Estimation" class="aui-button" style="margin-top: 5px"/>
+                <input name="action" type="submit" value="Stop Estimation" class="aui-button"/>
             #end
-        </p>
+            <input name="action" type="submit" value="Terminate" class="aui-button open-poker-terminate-estimation-btn"
+                   style="display: none;"/>
+        </div>
+
     </form>
     #elseif($viewDTO.getSession().getStatus() == "FINISHED")
     <table class="aui aui-table-list" style="max-width: 355px">
@@ -126,7 +134,7 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
 
         <div class="field-group">
             <label for="estimationInfo">Final Estimate:</label>
-            <select name="finalEstimateId" placeholder="Resulting Estimate" style="max-width: 140px"
+            <select name="finalEstimateId" placeholder="Resulting Estimate" style="max-width: 100px"
                     no-empty-values="false" class="op-aui-select">
                 #foreach($grade in $viewDTO.getEstimation().getEstimationGrades())
                     #if($grade.getId() == $viewDTO.getEstimation().getAverageEstimateId())
@@ -137,11 +145,13 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
                 #end
             </select>
         </div>
-        <div style="margin-top: 20px">
+        <div style="margin-top: 20px" class="aui-buttons">
             <p>
                 <input name="issueId" value="$issueId" type="hidden"/>
                 <input name="userId" value="$userId" type="hidden"/>
-                <input name="action" type="submit" value="Apply Estimate" class="aui-button aui-button-primary"/>
+                <span>$viewDTO.getCurrentScale().getName()</span>
+                <input name="estimationScale" value="$viewDTO.getCurrentScale().getName()" type="hidden">
+                <input name="action" type="submit" value="Apply" class="aui-button"/>
                 <input name="action" type="submit" value="Re-estimate" class="aui-button"/>
             </p>
         </div>
@@ -150,7 +160,8 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
 #else
 <div>
     <p>
-    <form action="$contextPath/plugins/servlet/open-poker/session" method="post" class="aui left-aligned-form">
+    <form action="$contextPath/plugins/servlet/open-poker/session" method="post" class="aui left-aligned-form"
+          style="margin-top: 0px">
         #if($currentEstimate)
             <ul class="item-details">
                 <li class="people-details">
@@ -165,7 +176,7 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
         #end
         <div class="field-group">
             <label for="estimationInfo">Estimation Scale:</label>
-            <select name="estimationScale" placeholder="Choose Estimate" style="max-width: 170px"
+            <select name="estimationScale" placeholder="Choose Scale" style="max-width: 150px"
                     no-empty-values="false" class="op-aui-select">
                 #foreach($unit in $estimationUnits)
                     <option class="imagebacked" value="$unit.getName()">$unit.getName()</option>
@@ -173,7 +184,7 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
             </select>
         </div>
 
-        <div style="margin-top: 20px">
+        <div style="margin-top: 10px">
             <input name="issueId" value="$issueId" type="hidden"/>
             <input name="userId" value="$userId" type="hidden"/>
             #if($currentEstimate)

@@ -33,6 +33,7 @@ public class EstimationDeckService {
             .put(EstimationUnit.FIBONACCI, new FibonacciDeck())
             .put(EstimationUnit.CLASSIC_PLANNING, new ClassicPlanningDeck())
             .put(EstimationUnit.T_SHIRT_SIZE, new TshirtSizeDeck())
+            .put(EstimationUnit.LINEAR, new LinearDeck())
             .build();
 
     public Deck getDeck(EstimationUnit estimationUnit) {

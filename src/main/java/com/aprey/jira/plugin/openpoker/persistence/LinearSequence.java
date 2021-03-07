@@ -28,33 +28,37 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-public enum FibonacciNumber implements EstimationGrade {
-    ZERO(11, "0", true),
-    ONE(1, "1", true),
-    TWO(2, "2", true),
-    THREE(3, "3", true),
-    FIVE(4, "5", true),
-    EIGHT(5, "8", true),
-    THIRTEEN(6, "13", true),
-    TWENTY_ONE(7, "21", true),
-    THIRTY_FOUR(12, "34", true),
-    FIFTY_FIVE(13, "55", true),
-    EIGHTY_NINE(14, "89", true),
-    INFINITE(8, "Infinite", false),
-    COFFEE(9, "Coffee", false),
-    QUESTION(10, "?", false);
+public enum LinearSequence implements EstimationGrade {
+    ZERO(1, "0", true),
+    ONE(2, "1", true),
+    TWO(3, "2", true),
+    THREE(4, "4", true),
+    FOUR(5, "5", true),
+    FIVE(6, "6", true),
+    SIX(7, "7", true),
+    EIGHT(8, "8", true),
+    NINE(9, "9", true),
+    TEN(10, "10", true),
+    ELEVEN(11, "11", true),
+    TWELFTH(12, "12", true),
+    THIRTEEN(13, "13", true),
+    FOURTEEN(14, "14", true),
+    FIFTEEN(15, "15", true),
+    INFINITE(16, "Infinite", false),
+    COFFEE(17, "Coffee", false),
+    QUESTION(18, "?", false);
 
     private final int id;
     private final String value;
     private final boolean applicable;
 
-    private static final Map<Integer, FibonacciNumber> ID_TO_INSTANCE_MAP = Stream.of(FibonacciNumber.values())
-                                                                                  .collect(toMap(
-                                                                                          FibonacciNumber::getId,
-                                                                                          Function.identity())
-                                                                                          );
+    private static final Map<Integer, LinearSequence> ID_TO_INSTANCE_MAP = Stream.of(LinearSequence.values())
+                                                                                 .collect(toMap(
+                                                                                         LinearSequence::getId,
+                                                                                         Function.identity())
+                                                                                         );
 
-    FibonacciNumber(int id, String value, boolean applicable) {
+    LinearSequence(int id, String value, boolean applicable) {
         this.id = id;
         this.value = value;
         this.applicable = applicable;
@@ -80,6 +84,6 @@ public enum FibonacciNumber implements EstimationGrade {
     }
 
     public static List<EstimationGrade> getValuesList() {
-        return Stream.of(FibonacciNumber.values()).collect(toList());
+        return Stream.of(LinearSequence.values()).collect(toList());
     }
 }

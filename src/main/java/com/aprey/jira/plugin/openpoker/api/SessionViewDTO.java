@@ -19,6 +19,7 @@
 
 package com.aprey.jira.plugin.openpoker.api;
 
+import com.aprey.jira.plugin.openpoker.EstimationScale;
 import com.aprey.jira.plugin.openpoker.PokerSession;
 import lombok.Builder;
 import lombok.Value;
@@ -29,4 +30,5 @@ public class SessionViewDTO {
     private final PokerSession session;
     private final UserDTO moderator;
     private final EstimationViewDTO estimation;
+    private final EstimationScale currentScale;
 }

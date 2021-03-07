@@ -42,6 +42,9 @@ function opAUIInit() {
     $(".op-estimator-tooltip").tooltip();
     $(".op-aui-select").auiSelect2();
     renderChart();
+    $(".open-poker-terminate-estimation-link").click(function () {
+        $(".open-poker-terminate-estimation-btn").click();
+    })
 }
 
 function renderChart() {
@@ -161,6 +164,7 @@ function addEstimator(avatarUrl, displayName) {
     var outerSpan = $('<span />', {'class': 'aui-avatar aui-avatar-small estimator-avatar'}).append(span);
 
     $('#open-poker-js-estimators').append(outerSpan);
+    $(".op-estimator-tooltip").tooltip();
 }
 
 function getColor(index) {

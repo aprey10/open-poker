@@ -19,6 +19,19 @@
 
 package com.aprey.jira.plugin.openpoker.persistence;
 
-public enum GradesDeckType {
-    Fibona
+import com.aprey.jira.plugin.openpoker.Deck;
+import com.aprey.jira.plugin.openpoker.EstimationGrade;
+import java.util.List;
+
+public class LinearDeck implements Deck {
+
+    @Override
+    public List<EstimationGrade> getGrades() {
+        return LinearSequence.getValuesList();
+    }
+
+    @Override
+    public EstimationGrade getGrade(int gradeId) {
+        return LinearSequence.findById(gradeId);
+    }
 }

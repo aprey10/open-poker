@@ -42,7 +42,7 @@ public class PokerSessionServlet extends HttpServlet {
                 .put(SessionAction.STOP_SESSION, new StopSessionProcessor())
                 .put(SessionAction.VOTE, new VoteProcessor())
                 .put(SessionAction.RE_ESTIMATE, new StartSessionProcessor())
-                .put(SessionAction.DELETE, new DeleteSessionProcessor())
+                .put(SessionAction.CANCEL, new DeleteSessionProcessor())
                 .put(SessionAction.APPLY_ESTIMATE, applyVoteProcessor)
                 .build();
     }

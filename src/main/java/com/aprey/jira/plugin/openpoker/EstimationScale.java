@@ -27,8 +27,9 @@ import lombok.Getter;
 
 @Getter
 public enum EstimationScale {
-    CLASSIC_PLANNING("Classic", EstimationUnit.CLASSIC_PLANNING),
+    CLASSIC_PLANNING("Planning Cards", EstimationUnit.CLASSIC_PLANNING),
     FIBONACCI("Fibonacci", EstimationUnit.FIBONACCI),
+    LINEAR("Linear", EstimationUnit.LINEAR),
     T_SHIRT_SIZE("T-shirt size", EstimationUnit.T_SHIRT_SIZE);
 
     private final String name;
@@ -43,6 +44,12 @@ public enum EstimationScale {
         return Arrays.stream(values())
                      .filter(e -> e.name.equals(name))
                      .map(EstimationScale::getEstimationUnit)
+                     .findFirst();
+    }
+
+    public static Optional<EstimationScale> findByUnit(EstimationUnit unit) {
+        return Arrays.stream(values())
+                     .filter(e -> e.estimationUnit.equals(unit))
                      .findFirst();
     }
 

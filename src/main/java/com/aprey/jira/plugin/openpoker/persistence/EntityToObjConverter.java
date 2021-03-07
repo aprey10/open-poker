@@ -63,6 +63,7 @@ class EntityToObjConverter {
                            .completionDate(entity.getCompletionDate())
                            .estimates(buildEstimates(entity.getEstimates(), entity.getUnitOfMeasure()))
                            .estimationGrades(estimationDeckService.getDeck(entity.getUnitOfMeasure()).getGrades())
+                           .estimationUnit(entity.getUnitOfMeasure())
                            .build();
     }
 

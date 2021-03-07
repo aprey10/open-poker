@@ -72,6 +72,8 @@ public class PlanningPokerWebPanelProvider extends AbstractJiraContextProvider {
         SessionViewDTO viewDTO = SessionViewDTO.builder()
                                                .session(session)
                                                .estimation(buildEstimationView(session, currentUser))
+                                               .currentScale(EstimationScale.findByUnit(session.getEstimationUnit())
+                                                                            .orElse(EstimationScale.CLASSIC_PLANNING))
                                                .moderator(
                                                        userConverter.buildUserDto(session.getModerator(), currentUser))
                                                .build();

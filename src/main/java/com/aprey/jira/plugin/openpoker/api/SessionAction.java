@@ -24,11 +24,11 @@ import java.util.stream.Stream;
 
 public enum SessionAction {
     START_SESSION("Start Estimation"),
-    VOTE("Vote"),
+    VOTE("Estimate"),
     STOP_SESSION("Stop Estimation"),
     RE_ESTIMATE("Re-estimate"),
-    APPLY_ESTIMATE("Apply Estimate"),
-    DELETE("End Session");
+    APPLY_ESTIMATE("Apply"),
+    CANCEL("Terminate");
 
     private final String actionName;
 
