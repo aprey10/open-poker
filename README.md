@@ -5,7 +5,7 @@
     Jira plugin which adds simple and handy Planning (Scrum) Poker to the Issue View page.
 </p>
 
-[![Demo](https://img.youtube.com/vi/61iEyZg8JZw/maxresdefault.jpg)](https://www.youtube.com/watch?v=61iEyZg8JZw)
+[![Demo](https://img.youtube.com/vi/61iEyZg8JZw/maxresdefault.jpg)](https://youtu.be/x3JumyxaRho)
 
 ### Actions description
 
