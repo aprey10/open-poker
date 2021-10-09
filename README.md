@@ -7,6 +7,13 @@
 
 [![Demo](https://img.youtube.com/vi/61iEyZg8JZw/maxresdefault.jpg)](https://youtu.be/x3JumyxaRho)
 
+### Donation
+Open Poker is Free Software and it's available free of charge.
+Your donation, which is purely optional, supports the devlopement.
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?business=5WSH9UURWWAN4&no_recurring=1&item_name=Open+Poker+plugin+support&currency_code=USD)
+
+
 ### Actions description
 
 **Start Estimation** - starts a new estimation session for the current jira issue. The jira issue can have only one estimation session in progress.
