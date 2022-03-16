@@ -20,5 +20,5 @@
 package com.aprey.jira.plugin.openpoker;
 
 public enum EstimationUnit {
-    FIBONACCI, CLASSIC_PLANNING, T_SHIRT_SIZE, LINEAR;
+    FIBONACCI, CLASSIC_PLANNING, T_SHIRT_SIZE, LINEAR,FISTTOFIVE;
 }
