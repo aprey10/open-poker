@@ -30,10 +30,10 @@ import static java.util.stream.Collectors.toMap;
 
 public enum FistToFive implements EstimationGrade {
     FIST(1, "Fist", false),
-    ZERO(2, "0", true),
-    ONE(3, "1", true),
-    TWO(4, "2", true),
-    THREE(5, "3", true),
+    ONE(2, "1", true),
+    TWO(3, "2", true),
+    THREE(4, "3", true),
+    FOUR(5, "4", true),
     FIVE(6, "5", true);
 
     private final int id;
