@@ -30,7 +30,8 @@ public enum EstimationScale {
     CLASSIC_PLANNING("Planning Cards", EstimationUnit.CLASSIC_PLANNING),
     FIBONACCI("Fibonacci", EstimationUnit.FIBONACCI),
     LINEAR("Linear", EstimationUnit.LINEAR),
-    T_SHIRT_SIZE("T-shirt size", EstimationUnit.T_SHIRT_SIZE);
+    T_SHIRT_SIZE("T-shirt size", EstimationUnit.T_SHIRT_SIZE),
+    FIST_TO_FIVE("Fist to Five", EstimationUnit.FIST_TO_FIVE);
 
     private final String name;
     private EstimationUnit estimationUnit;

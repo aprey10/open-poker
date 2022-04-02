@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021  Andriy Preizner
+ * Copyright (C) 2022  Public Domain
  *
  * This file is a part of Open Poker jira plugin
  *
@@ -17,8 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.aprey.jira.plugin.openpoker;
+package com.aprey.jira.plugin.openpoker.persistence;
 
-public enum EstimationUnit {
-    FIBONACCI, CLASSIC_PLANNING, T_SHIRT_SIZE, LINEAR, FIST_TO_FIVE;
+import com.aprey.jira.plugin.openpoker.EstimationGrade;
+import com.aprey.jira.plugin.openpoker.Deck;
+import java.util.List;
+
+public class FistToFiveDeck implements Deck {
+
+    @Override
+    public List<EstimationGrade> getGrades() {
+        return FistToFive.getValuesList();
+    }
+
+    @Override
+    public EstimationGrade getGrade(int gradeId) {
+        return FistToFive.findById(gradeId);
+    }
 }

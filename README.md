@@ -38,6 +38,8 @@ Your donation, which is purely optional, supports the devlopement.
 
 **T-shirt size** - XS, S, M, L, XL, XXL, XXXL
 
+**Fist To Five** - Fist, 1, 2, 3, 4, 5
+
 
 ### Data security and privacy statement
 
