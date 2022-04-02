@@ -34,7 +34,7 @@ public class EstimationDeckService {
             .put(EstimationUnit.CLASSIC_PLANNING, new ClassicPlanningDeck())
             .put(EstimationUnit.T_SHIRT_SIZE, new TshirtSizeDeck())
             .put(EstimationUnit.LINEAR, new LinearDeck())
-            .put(EstimationUnit.FISTTOFIVE, new FistToFiveDeck())
+            .put(EstimationUnit.FIST_TO_FIVE, new FistToFiveDeck())
             .build();
 
     public Deck getDeck(EstimationUnit estimationUnit) {
