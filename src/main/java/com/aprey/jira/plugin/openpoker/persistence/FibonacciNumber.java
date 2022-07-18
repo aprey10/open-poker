@@ -36,6 +36,9 @@ public enum FibonacciNumber implements EstimationGrade {
     EIGHT(5, "8", true),
     THIRTEEN(6, "13", true),
     TWENTY_ONE(7, "21", true),
+    THIRTY_FOUR(11, "34", true),
+    FIFTY_FIVE(12, "55", true),
+    EIGHTY_NINE(13, "89", true),
     INFINITE(8, "Infinite", false),
     COFFEE(9, "Coffee", false),
     QUESTION(10, "?", false);
@@ -46,8 +49,8 @@ public enum FibonacciNumber implements EstimationGrade {
 
     private static final Map<Integer, FibonacciNumber> ID_TO_INSTANCE_MAP = Stream.of(FibonacciNumber.values())
                                                                                   .collect(toMap(
-                                                                                          FibonacciNumber::getId,
-                                                                                          Function.identity())
+                                                                                                   FibonacciNumber::getId,
+                                                                                                   Function.identity())
                                                                                           );
 
     FibonacciNumber(int id, String value, boolean applicable) {
