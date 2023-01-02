@@ -20,7 +20,7 @@
 //TODO: consider replacing it with some lightweight single page JS framework.
 (function ($) {
     $(document).ready(function () {
-        opSyncInit();
+        opSyncInit($);
         JIRA.bind(JIRA.Events.NEW_CONTENT_ADDED, function (e, context, reason) {
             if (reason === 'issueTableRowRefreshed' || reason === 'pageLoad') {
                 setTimeout(opAUIInit, 500);
@@ -30,17 +30,18 @@
 
 })(AJS.$ || jQuery);
 
-function opSyncInit() {
+function opSyncInit($) {
     var url = AJS.contextPath() + "/rest/open-poker/1.0/session";
     var sessionStatus = $("#open-poker-js-session-status").val();
     if (sessionStatus === "IN_PROGRESS") {
-        sync(url);
+        sync($, url);
     }
 }
 
 function opAUIInit() {
+    const $ = AJS.$;
     $(".op-estimator-tooltip").tooltip();
-    renderChart();
+    renderChart($);
     $(".open-poker-terminate-estimation-link").click(function () {
         $(".open-poker-terminate-estimation-btn").click();
     });
@@ -56,7 +57,7 @@ function opAUIInit() {
     });
 }
 
-function renderChart() {
+function renderChart($) {
     if ($("#open-poker-js-session-status").val() !== "FINISHED") {
         return;
     }
@@ -116,7 +117,7 @@ function initiateChart(chartData) {
     });
 }
 
-function sync(url) {
+function sync($, url) {
     var issueId = $("#open-poker-js-issueId").val()
     var userId = $("#open-poker-js-userId").val()
     $.ajax({
@@ -126,16 +127,16 @@ function sync(url) {
         data: {issueId: issueId, userId: userId}
     }).done(function (data) {
         if (data.status === "IN_PROGRESS") {
-            syncEstimators(data.estimators);
+            syncEstimators($, data.estimators);
             setTimeout(function () {
-                sync(url);
+                sync($, url);
             }, 7000);
         }
     });
 }
 
-function syncEstimators(estimatorsFromServer) {
-    var displayedEstimators = getEstimatorsFromView();
+function syncEstimators($, estimatorsFromServer) {
+    var displayedEstimators = getEstimatorsFromView($);
 
     if (estimatorsFromServer.length > 0 && displayedEstimators.length === 0) {
         // Removes a word placeholder which indicates that no one has voted yet
@@ -144,7 +145,7 @@ function syncEstimators(estimatorsFromServer) {
 
     $.each(estimatorsFromServer, function (i, el) {
         if (doesNotContain(displayedEstimators, el.displayName)) {
-            addEstimator(el.avatarUrl, el.displayName);
+            addEstimator($, el.avatarUrl, el.displayName);
         }
     })
 }
@@ -153,7 +154,7 @@ function doesNotContain(list, item) {
     return list.indexOf(item) === -1;
 }
 
-function getEstimatorsFromView() {
+function getEstimatorsFromView($) {
     var estimators = []
     $.each($(".op-estimator-tooltip"), function (i, e) {
         estimators.push(e.getAttribute('data-title'));
@@ -162,7 +163,7 @@ function getEstimatorsFromView() {
     return estimators;
 }
 
-function addEstimator(avatarUrl, displayName) {
+function addEstimator($, avatarUrl, displayName) {
     var img = $('<img />', {'src': avatarUrl, 'alt': displayName});
     var span = $('<span />', {
         'class': 'aui-avatar-inner op-estimator-tooltip',

@@ -28,6 +28,7 @@
 .open-poker-terminate-estimation-link {
     display: block;
     font-size: 13px;
+    cursor: pointer;
 }
 
 .open-poker-btn-group {
