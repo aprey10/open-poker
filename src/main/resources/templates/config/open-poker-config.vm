@@ -1,0 +1,37 @@
+$webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:open-poker-config-resources")
+<html>
+<head>
+    <title>Open poker configuration</title>
+</head>
+<body>
+
+<header class="aui-page-header">
+    <div class="aui-page-header-inner">
+        <div class="aui-page-header-main">
+            <h1>Open poker configuration</h1>
+        </div>
+    </div>
+</header>
+<h2>Permissions</h2>
+<form action="$action.getURL()" class="aui" method="POST">
+    <input type="hidden" id="allowedProjects" name="allowedProjects" value="$action.getAllowedProjectsValue()"/>
+    <fieldset>
+        <div class="field-group">
+            <label for="allowedProjects" class="paramName">Used projects:</label>
+            <select id="allowedProjectsSelect" name="allowedProjectsSelect" style="padding: 5px 0 0 0" multiple>
+                #foreach ($project in $projects)
+                    <option #if(${allowedProjects.contains(${project.getKey()})}) selected #end value="${project.getKey()}">${project.getName()} (${project.getKey()})</option>
+                #end
+            </select>
+            <div class="description">Define the projects, where open poker should be rendered on the issue view. If no project is selected, it will be enabled for all projects.</div>
+        </div>
+    </fieldset>
+
+    <div class="buttons-container" style="padding: 10px 0 4px 0;">
+        <div class="buttons">
+            <button id="save_button" class="aui-button aui-button-primary" type="submit">Save</button>
+        </div>
+    </div>
+</form>
+</body>
+</html>

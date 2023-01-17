@@ -158,6 +158,12 @@
                 <artifactId>jira-maven-plugin</artifactId>
                 <version>${amps.version}</version>
                 <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>default-test-jar</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
                 <configuration>
                     <productVersion>${jira.version}</productVersion>
                     <productDataVersion>${jira.version}</productDataVersion>
@@ -172,7 +178,7 @@
                     </pluginArtifacts>
                     -->
                     <enableQuickReload>true</enableQuickReload>
-                    <enableFastdev>false</enableFastdev>
+                    <compressResources>false</compressResources>
                     <!-- See here for an explanation of default instructions: -->
                     <!-- https://developer.atlassian.com/docs/advanced-topics/configuration-of-instructions-in-atlassian-plugins -->
                     <instructions>

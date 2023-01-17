@@ -47,6 +47,16 @@
         <context>jira.navigator.advanced</context>
         <context>jira.navigator.simple</context>
     </web-resource>
+    <web-resource key="open-poker-config-resources" name="open-poker config web resources">
+        <context>open-poker-config</context>
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <dependency>com.atlassian.auiplugin:aui-select2</dependency>
+        <dependency>com.atlassian.auiplugin:aui-tooltips</dependency>
+        <resource type="download" name="open-poker-config.css" location="/css/config/open-poker-config.css"/>
+        <resource type="download" name="open-poker-config.js" location="/js/config/open-poker-config.js"/>
+        <resource type="download" name="images/" location="/images"/>
+    </web-resource>
+
     <web-panel name="PlanningPoker" i18n-name-key="planning-poker.name" key="planning-poker"
                location="atl.jira.view.issue.right.context" weight="1000">
         <description key="planning-poker.description">The PlanningPoker Plugin</description>
@@ -54,18 +64,40 @@
         <resource name="view" type="velocity" location="templates/planning-poker.vm"/>
         <label key="planning-poker.title"/>
     </web-panel>
+
     <ao key="ao-module">
         <description>The module configuring the Active Objects service used by this plugin</description>
         <entity>com.aprey.jira.plugin.openpoker.persistence.PokerSessionEntity</entity>
         <entity>com.aprey.jira.plugin.openpoker.persistence.EstimateEntity</entity>
         <entity>com.aprey.jira.plugin.openpoker.persistence.FinalEstEntity</entity>
     </ao>
+
     <servlet name="Poker Planning Servlet" class="com.aprey.jira.plugin.openpoker.api.PokerSessionServlet"
              key="poker-session">
         <description>A servlet to add new Planning Poker session</description>
         <url-pattern>/open-poker/session</url-pattern>
     </servlet>
+
     <rest key="rest" path="/open-poker" version="1.0">
         <description>Rest resource for</description>
     </rest>
+
+    <web-section key="openpoker-section" name="Openpoker" location="admin_plugins_menu" weight="80">
+        <label key="Openpoker"/>
+    </web-section>
+
+    <web-item key="openpokerConfiguration" section="admin_plugins_menu/openpoker-section" name="openpokerConfiguration" weight="200">
+        <description>Page, to configure open poker.</description>
+        <label key="Configuration"/>
+        <description>xOpenpoker Configuration</description>
+        <link linkId="open-poker-configuration">/secure/admin/open-poker/openPokerConfig!default.jspa</link>
+    </web-item>
+
+    <webwork1 key="open-poker-pages" name="Openpoker administration pages" class="java.lang.Object">
+        <actions>
+            <action name="com.aprey.jira.plugin.openpoker.config.PokerConfigPage" alias="openPokerConfig" roles-required="admin">
+                <view name="input">/templates/config/open-poker-config.vm</view>
+            </action>
+        </actions>
+    </webwork1>
 </atlassian-plugin>
