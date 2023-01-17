@@ -63,6 +63,7 @@
         <context-provider class="com.aprey.jira.plugin.openpoker.api.PlanningPokerWebPanelProvider"/>
         <resource name="view" type="velocity" location="templates/planning-poker.vm"/>
         <label key="planning-poker.title"/>
+        <condition class="com.aprey.jira.plugin.openpoker.api.config.AllowedProjectsCondition"/>
     </web-panel>
 
     <ao key="ao-module">
