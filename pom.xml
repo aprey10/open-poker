@@ -239,7 +239,7 @@
         </plugins>
     </build>
     <properties>
-        <jira.version>8.20.10</jira.version>
+        <jira.version>9.5.0</jira.version>
         <amps.version>8.0.2</amps.version>
         <plugin.testrunner.version>2.0.1</plugin.testrunner.version>
         <atlassian.spring.scanner.version>1.2.13</atlassian.spring.scanner.version>
