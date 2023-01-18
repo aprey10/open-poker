@@ -39,6 +39,13 @@
             <version>${jira.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- For Jira 8/9 compatibility-->
+        <dependency>
+            <groupId>com.sevidev</groupId>
+            <artifactId>jira9-compatibility</artifactId>
+            <version>1.0.0</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- Add dependency on jira-core if you want access to JIRA implementation classes as well as the sanctioned API. -->
         <!-- This is not normally recommended, but may be required eg when migrating a plugin originally developed against JIRA 4.x -->
         <!--
@@ -199,7 +206,8 @@
                         <Export-Package>com.aprey.jira.plugin.openpoker.api,</Export-Package>
                         <!-- Add package import here -->
                         <Import-Package>org.springframework.osgi.*;resolution:="optional",
-                            org.eclipse.gemini.blueprint.*;resolution:="optional", *
+                            org.eclipse.gemini.blueprint.*;resolution:="optional", *,
+                            *;version="0";resolution:=optional
                         </Import-Package>
                         <!-- Ensure plugin is spring powered -->
                         <Spring-Context>*</Spring-Context>
@@ -231,7 +239,7 @@
         </plugins>
     </build>
     <properties>
-        <jira.version>9.5.0</jira.version>
+        <jira.version>8.20.10</jira.version>
         <amps.version>8.0.2</amps.version>
         <plugin.testrunner.version>2.0.1</plugin.testrunner.version>
         <atlassian.spring.scanner.version>1.2.13</atlassian.spring.scanner.version>

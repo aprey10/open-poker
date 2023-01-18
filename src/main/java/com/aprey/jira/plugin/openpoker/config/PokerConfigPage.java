@@ -8,7 +8,6 @@ import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.request.RequestMethod;
 import com.atlassian.jira.security.request.SupportedMethods;
-import com.atlassian.jira.security.xsrf.DoesNotRequireXsrfCheck;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +38,6 @@ public class PokerConfigPage extends JiraWebActionSupport {
 	 * Method is called when the form is submitted
 	 */
 	@Override
-	@DoesNotRequireXsrfCheck
 	@SupportedMethods({ RequestMethod.POST })
 	protected String doExecute() throws Exception {
 		String updatedAllowedProjects = getUpdatedAllowedProjects();
