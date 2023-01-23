@@ -206,8 +206,8 @@
                         <Export-Package>com.aprey.jira.plugin.openpoker.api,</Export-Package>
                         <!-- Add package import here -->
                         <Import-Package>org.springframework.osgi.*;resolution:="optional",
-                            org.eclipse.gemini.blueprint.*;resolution:="optional", *,
-                            *;version="0";resolution:=optional
+                            org.eclipse.gemini.blueprint.*;resolution:="optional", *;
+                            *;resolution:="optional"
                         </Import-Package>
                         <!-- Ensure plugin is spring powered -->
                         <Spring-Context>*</Spring-Context>
