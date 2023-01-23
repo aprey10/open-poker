@@ -14,9 +14,10 @@ $webResourceManager.requireResource("com.aprey.jira.plugin.openpoker.open-poker:
 </header>
 <h2>Permissions</h2>
 <form action="$action.getURL()" class="aui" method="POST">
+    <input type="hidden" name="atl_token" value="$atl_token" />
     <input type="hidden" id="allowedProjects" name="allowedProjects" value="$action.getAllowedProjectsValue()"/>
     <fieldset>
-        <label for="allowedProjects" class="paramName">Projects:</label>
+        <label for="allowedProjects" class="allowedProjectsSelectLabel">Projects:</label>
         <select id="allowedProjectsSelect" name="allowedProjectsSelect" style="padding: 5px 0 0 0" multiple>
             #foreach ($project in $projects)
                 <option #if(${allowedProjects.contains(${project.getKey()})}) selected #end value="${project.getKey()}">${project.getName()} (${project.getKey()})</option>

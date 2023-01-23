@@ -9,8 +9,6 @@ import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 
 public abstract class ConfigurationManager {
-	private static PluginSettingsFactory pluginSettingsFactory = ComponentAccessor.getOSGiComponentInstanceOfType(PluginSettingsFactory.class);
-
 	//Key for plugin settings
 	private static String OPEN_POKER_KEY = "com.aprey.jira.plugin.openpoker";
 

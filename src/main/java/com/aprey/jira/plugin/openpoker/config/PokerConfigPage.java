@@ -20,8 +20,6 @@ import static com.aprey.jira.plugin.openpoker.api.config.ConfigurationManager.st
 @SupportedMethods({ RequestMethod.GET })
 public class PokerConfigPage extends JiraWebActionSupport {
 
-	//Logger instance for the class
-	private static Logger log = LoggerFactory.getLogger(PokerConfigPage.class);
 	//List of allowed projects
 	private List<String> allowedProjects = new ArrayList<>();
 

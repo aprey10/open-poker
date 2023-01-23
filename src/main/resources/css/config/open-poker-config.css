@@ -1,0 +1,10 @@
+.allowedProjectsSelectLabel
+{
+	display: flex;
+	width: 100%;
+}
+
+#s2id_allowedProjectsSelect
+{
+	max-width: 800px;
+}

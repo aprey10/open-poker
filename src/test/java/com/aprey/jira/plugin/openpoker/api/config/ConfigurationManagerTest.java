@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.aprey.jira.plugin.openpoker.api.config.ConfigurationManager;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.mock.component.MockComponentWorker;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
