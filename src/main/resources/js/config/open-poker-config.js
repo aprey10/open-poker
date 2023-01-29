@@ -11,6 +11,8 @@ AJS.$(document).ready(() => {
 			AJS.$("#allowedProjects").val(AJS.$("#allowedProjectsSelect").val());
 		});
 	};
-
+//	This line disables "Changes you made may not be saved" pop-up window because it doesn't work properly
+// TODO: that should be investigated
+    window.onbeforeunload = null;
 	initialize();
 });

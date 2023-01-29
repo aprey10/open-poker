@@ -9,8 +9,6 @@ import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.request.RequestMethod;
 import com.atlassian.jira.security.request.SupportedMethods;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import webwork.action.Action;
 import webwork.action.ServletActionContext;
 

@@ -8,8 +8,8 @@
 [![Demo](https://img.youtube.com/vi/61iEyZg8JZw/maxresdefault.jpg)](https://youtu.be/x3JumyxaRho)
 
 ### Donation
-Open Poker is Free Software and it's available free of charge.
-Your donation, which is purely optional, supports the devlopement.
+Open Poker is Free Software, and it's available free of charge.
+Your donation, which is purely optional, supports the development.
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?business=5WSH9UURWWAN4&no_recurring=1&item_name=Open+Poker+plugin+support&currency_code=USD)
 
@@ -40,6 +40,11 @@ Your donation, which is purely optional, supports the devlopement.
 
 **Fist To Five** - Fist, 1, 2, 3, 4, 5
 
+### Supported configuration
+
+It's possible to define the jira projects, where Open Poker would be rendered on the issue view.
+In order to do that jira admin user should go to Jira Administration -> Manage Apps -> Find Open Poker on the left side menu -> Open configuration
+Please choose desired projects and press 'Save'. If no projects are chosen Open Poker would be available for each project by default.
 
 ### Data security and privacy statement
 

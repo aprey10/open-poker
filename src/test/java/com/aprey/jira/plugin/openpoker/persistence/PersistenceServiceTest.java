@@ -89,11 +89,11 @@ public class PersistenceServiceTest {
 
     @Test
     public void newEstimateIsAdded() {
-        //        TODO: replace any(Query.class) with concrete equal
-        when(ao.find(eq(PokerSessionEntity.class), any(Query.class))).thenReturn(
+        //        TODO: replace any() with concrete equal
+        when(ao.find(eq(PokerSessionEntity.class), any())).thenReturn(
                 new PokerSessionEntity[]{sessionEntity});
 
-        when(ao.find(eq(EstimateEntity.class), any(Query.class))).thenReturn(new EstimateEntity[]{});
+        when(ao.find(eq(EstimateEntity.class), any())).thenReturn(new EstimateEntity[]{});
         when(ao.create(EstimateEntity.class)).thenReturn(estimateEntity);
 
         service.addEstimate("TEST-1", 12L, 12);
@@ -106,11 +106,11 @@ public class PersistenceServiceTest {
 
     @Test
     public void existingEstimateIsUpdated() {
-        //        TODO: replace any(Query.class) with concrete equal
-        when(ao.find(eq(PokerSessionEntity.class), any(Query.class))).thenReturn(
+        //        TODO: replace any() with concrete equal
+        when(ao.find(eq(PokerSessionEntity.class), any())).thenReturn(
                 new PokerSessionEntity[]{sessionEntity});
 
-        when(ao.find(eq(EstimateEntity.class), any(Query.class))).thenReturn(new EstimateEntity[]{estimateEntity});
+        when(ao.find(eq(EstimateEntity.class), any())).thenReturn(new EstimateEntity[]{estimateEntity});
 
         service.addEstimate("TEST-1", 12L, 12);
 
